@@ -6,7 +6,7 @@ export default ({ env }) => ({
   },
   admin: {
     auth: {
-      secret: env('JWT_SECRET', "fagqKvILQ5BXiRFEiKsN+/NAry7f3VTp1XmPAfH4Rc0="),
+      secret: env('JWT_SECRET'),
     },
   },
 });
