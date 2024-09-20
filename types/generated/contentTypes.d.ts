@@ -6,6 +6,7 @@ export interface ApiBlogBlog extends Struct.CollectionTypeSchema {
     singularName: 'blog';
     pluralName: 'blogs';
     displayName: 'Blog';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -19,6 +20,13 @@ export interface ApiBlogBlog extends Struct.CollectionTypeSchema {
     >;
     article_id: Schema.Attribute.UID<'Title'>;
     ViewContent: Schema.Attribute.RichText;
+    Editor: Schema.Attribute.RichText &
+      Schema.Attribute.CustomField<
+        'plugin::ckeditor5.CKEditor',
+        {
+          preset: 'default';
+        }
+      >;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
