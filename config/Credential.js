@@ -8,11 +8,11 @@ const environment = {
     SECRET_KEY: "(?9n%]9Q*k[,,.\vJ89-",
   },
   test: {
-    DATABASE: "",
-    USER: "",
-    HOST: "",
-    PASSWORD: "",
-    DB_PORT: "",
+    DATABASE: "extra_slip",
+    USER: "extra_slip_user",
+    HOST: "localhost",
+    PASSWORD: "User!234",
+    DB_PORT: "3306",
     SECRET_KEY: "(?9n%]9Q*k[,,.\vJ89-",
   },
   prod: {
