@@ -1,6 +1,6 @@
 const environment = {
   dev: {
-    DATABASE: "tutor_app",
+    DATABASE: "extra_slip",
     USER: "root",
     HOST: "localhost",
     PASSWORD: "",
