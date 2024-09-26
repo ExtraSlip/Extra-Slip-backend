@@ -3,4 +3,5 @@ module.exports = {
   Quiz: require("./Quiz"),
   Admin: require("./Admin"),
   Question: require("./Question"),
+  Poll: require("./Poll"),
 };
