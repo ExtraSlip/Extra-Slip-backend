@@ -23,12 +23,14 @@ const RegisterValidation = async (req, res, next) => {
 };
 
 const LoginValidation = async (req, res, next) => {
-  const schema = Joi.object()
-    .keys({
-      email: email,
-      password: password,
-    })
-    .unknown(true);
+  const schema = Joi.object().keys({
+    email: email,
+    password: password,
+    redirectTo: Joi.any().optional().allow("", null),
+    csrfToken: Joi.any().optional().allow("", null),
+    callbackUrl: Joi.any().optional().allow("", null),
+    json: Joi.any().optional().allow("", null),
+  });
   await Validate(req, res, next, schema);
 };
 
