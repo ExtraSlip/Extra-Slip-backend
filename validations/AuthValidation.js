@@ -23,10 +23,12 @@ const RegisterValidation = async (req, res, next) => {
 };
 
 const LoginValidation = async (req, res, next) => {
-  const schema = Joi.object().keys({
-    email: email,
-    password: password,
-  });
+  const schema = Joi.object()
+    .keys({
+      email: email,
+      password: password,
+    })
+    .unknown(true);
   await Validate(req, res, next, schema);
 };
 
