@@ -26,6 +26,10 @@ const index = async (req, res) => {
 const add = async (req, res) => {
   try {
     let payload = req.body;
+    console.log(req.file, "=-=-=");
+    if (req.file.path) {
+      payload["image"] = "/uploads/" + req.file?.filename;
+    }
     let question = await Question.create(payload);
     return success(res, {
       msg: "Question created successfully",
@@ -47,6 +51,10 @@ const update = async (req, res) => {
       return error(res, {
         msg: "Question not found",
       });
+    }
+
+    if (req.file?.path) {
+      payload["image"] = "/uploads/" + req.file?.filename;
     }
 
     await Question.update(payload, {
