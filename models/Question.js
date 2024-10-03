@@ -40,6 +40,10 @@ const Question = db.define("questions", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  correctAnswer: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   image: {
     type: DataTypes.STRING,
     allowNull: true,

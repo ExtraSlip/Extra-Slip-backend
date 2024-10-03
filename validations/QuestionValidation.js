@@ -24,6 +24,9 @@ const QuestionValidation = async (req, res, next) => {
     answerReason: Joi.string().optional().allow("", null).messages({
       "any.required": "Answer Reason field is required",
     }),
+    correctAnswer: Joi.string().required().messages({
+      "any.required": "Correct Answer field is required",
+    }),
     image: Joi.string().optional().allow(null, ""),
   });
   await Validate(req, res, next, schema);
