@@ -3,4 +3,7 @@ module.exports = {
   QuizController: require("./QuizController"),
   QuestionController: require("./QuestionController"),
   PollController: require("./PollController"),
+  TeamController: require("./TeamController"),
+  PlayerController: require("./PlayerController"),
+  MatchRatingController: require("./MatchRatingController"),
 };

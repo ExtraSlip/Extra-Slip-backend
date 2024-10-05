@@ -5,5 +5,8 @@ router.use("/", require("./Auth"));
 router.use("/quizzes", require("./Quiz"));
 router.use("/polls", require("./Poll"));
 router.use("/questions", require("./Question"));
+router.use("/players", require("./Player"));
+router.use("/teams", require("./Team"));
+router.use("/matchRatings", require("./MatchRating"));
 
 module.exports = router;
