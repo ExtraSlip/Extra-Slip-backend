@@ -6,17 +6,11 @@ const PollValidation = async (req, res, next) => {
     title: Joi.string().required().messages({
       "any.required": "Title field is required",
     }),
-    optionA: Joi.string().required().messages({
-      "any.required": "Option A field is required",
+    description: Joi.string().required().messages({
+      "any.required": "Description field is required",
     }),
-    optionB: Joi.string().required().messages({
-      "any.required": "Option A field is required",
-    }),
-    optionC: Joi.string().required().messages({
-      "any.required": "Option A field is required",
-    }),
-    optionD: Joi.string().required().messages({
-      "any.required": "Option A field is required",
+    pollOptions: Joi.string().required().messages({
+      "any.required": "Poll options field are required",
     }),
   });
   await Validate(req, res, next, schema);

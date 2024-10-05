@@ -1,7 +1,7 @@
 const sequelize = require("./Connection");
 const bcrypt = require("bcrypt");
 
-const { User, Admin, Question, Quiz, Poll } = require("../models");
+const { User, Admin, Question, Quiz, Poll, PollOption } = require("../models");
 const AdminType = require("../constants/AdminType");
 
 sequelize

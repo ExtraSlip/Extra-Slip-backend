@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { db } = require("../utils");
+const Admin = require("./Admin");
 
 const Poll = db.define("polls", {
   id: {
@@ -11,26 +12,25 @@ const Poll = db.define("polls", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  optionA: {
+  description: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  optionB: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  optionC: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  optionD: {
-    type: DataTypes.STRING,
-    allowNull: true,
   },
   status: {
     type: DataTypes.INTEGER,
     defaultValue: 1,
   },
+  createdBy: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "admins",
+      key: "id",
+    },
+    allowNull: false,
+  },
 });
+
+Admin.hasMany(Poll, { foreignKey: "createdBy" });
+Poll.belongsTo(Admin, { foreignKey: "createdBy" });
 
 module.exports = Poll;

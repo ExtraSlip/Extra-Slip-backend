@@ -4,4 +4,5 @@ module.exports = {
   Admin: require("./Admin"),
   Question: require("./Question"),
   Poll: require("./Poll"),
+  PollOption: require("./PollOption"),
 };
