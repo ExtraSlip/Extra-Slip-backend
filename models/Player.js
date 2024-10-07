@@ -48,6 +48,10 @@ const Player = db.define("players", {
     type: DataTypes.FLOAT,
     allowNull: true,
   },
+  teams: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   about: {
     type: DataTypes.TEXT,
     allowNull: true,

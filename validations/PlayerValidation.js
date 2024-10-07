@@ -39,6 +39,9 @@ const PlayerValidation = async (req, res, next) => {
     stats: Joi.string().optional().allow("", null).messages({
       "any.required": "Stats field is required",
     }),
+    teams: Joi.string().optional().allow("", null).messages({
+      "any.required": "Teams field is required",
+    }),
   });
   await Validate(req, res, next, schema);
 };
