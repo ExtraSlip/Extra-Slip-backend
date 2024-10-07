@@ -40,6 +40,14 @@ const Player = db.define("players", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  rating: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
   about: {
     type: DataTypes.TEXT,
     allowNull: true,

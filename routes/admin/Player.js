@@ -9,7 +9,10 @@ router.get("/", verifyAdminToken, PlayerController.index);
 router.post(
   "/",
   verifyAdminToken,
-  upload.single("stats"),
+  upload.fields([
+    { name: "stats", maxCount: 1 },
+    { name: "image", maxCount: 1 },
+  ]),
   PlayerValidation,
   PlayerController.add
 );
@@ -17,7 +20,10 @@ router.post(
 router.put(
   "/:id",
   verifyAdminToken,
-  upload.single("stats"),
+  upload.fields([
+    { name: "stats", maxCount: 1 },
+    { name: "image", maxCount: 1 },
+  ]),
   PlayerValidation,
   PlayerController.update
 );

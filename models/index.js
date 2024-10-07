@@ -4,7 +4,7 @@ module.exports = {
   Admin: require("./Admin"),
   Question: require("./Question"),
   Poll: require("./Poll"),
-  Poll: require("./Poll"),
+  PollOption: require("./PollOption"),
   Player: require("./Player"),
   TeamPlayer: require("./TeamPlayer"),
   Team: require("./Team"),

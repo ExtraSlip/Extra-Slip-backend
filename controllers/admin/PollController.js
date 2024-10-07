@@ -42,13 +42,12 @@ const add = async (req, res) => {
   try {
     let payload = req.body;
     payload["createdBy"] = req.user.id;
-    const files = req.files?.pollOptionImages ?? [];
     payload["pollOptions"] = JSON.parse(payload.pollOptions);
     let poll = await Poll.create(payload);
     payload?.pollOptions?.map((element, index) => {
-      if (files.length > index) {
+      if (req.files?.[`pollOptionImage${index + 1}`]) {
         payload.pollOptions[index]["image"] =
-          "/uploads/" + files[index].filename;
+          "/uploads/" + req.files?.[`pollOptionImage${index + 1}`][0].filename;
       }
       payload.pollOptions[index]["pollId"] = poll.id;
     });
@@ -80,14 +79,11 @@ const update = async (req, res) => {
       },
     });
     payload["pollOptions"] = JSON.parse(payload.pollOptions);
-    let files = req.files?.pollOptionImages ?? [];
-    let fileUploadingOptions = payload.pollOptions.filter(
-      (e) => e.isImageUpdated
-    );
-    4;
-    await fileUploadingOptions.map(async (e, index) => {
-      if (files.length > index) {
-        e.image = "/uploads/" + files[index].filename;
+
+    await payload?.pollOptions?.map(async (e, index) => {
+      if (req.files?.[`pollOptionImage${index + 1}`]) {
+        e.image =
+          "/uploads/" + req.files?.[`pollOptionImage${index + 1}`][0].filename;
       }
       if (e.pollOptionId) {
         await PollOption.update(e, {
@@ -98,17 +94,6 @@ const update = async (req, res) => {
       } else {
         e.pollId = poll.id;
         await PollOption.create(e);
-      }
-    });
-    await payload.pollOptions.map(async (e, index) => {
-      if (!e.isImageUpdated) {
-        if (e.pollOptionId) {
-          await PollOption.update(e, {
-            where: {
-              id: e.pollOptionId,
-            },
-          });
-        }
       }
     });
 

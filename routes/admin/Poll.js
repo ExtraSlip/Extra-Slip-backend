@@ -9,14 +9,38 @@ router.get("/", verifyAdminToken, PollController.index);
 router.post(
   "/",
   verifyAdminToken,
-  upload.fields([{ name: "pollOptionImages", maxCount: 12 }]),
+  upload.fields([
+    { name: "pollOptionImage1", maxCount: 1 },
+    { name: "pollOptionImage2", maxCount: 1 },
+    { name: "pollOptionImage3", maxCount: 1 },
+    { name: "pollOptionImage4", maxCount: 1 },
+    { name: "pollOptionImage5", maxCount: 1 },
+    { name: "pollOptionImage6", maxCount: 1 },
+    { name: "pollOptionImage7", maxCount: 1 },
+    { name: "pollOptionImage8", maxCount: 1 },
+    { name: "pollOptionImage9", maxCount: 1 },
+    { name: "pollOptionImage10", maxCount: 1 },
+    { name: "pollOptionImage11", maxCount: 1 },
+  ]),
   PollValidation,
   PollController.add
 );
 router.put(
   "/:id",
   verifyAdminToken,
-  upload.fields([{ name: "pollOptionImages", maxCount: 12 }]),
+  upload.fields([
+    { name: "pollOptionImage1", maxCount: 1 },
+    { name: "pollOptionImage2", maxCount: 1 },
+    { name: "pollOptionImage3", maxCount: 1 },
+    { name: "pollOptionImage4", maxCount: 1 },
+    { name: "pollOptionImage5", maxCount: 1 },
+    { name: "pollOptionImage6", maxCount: 1 },
+    { name: "pollOptionImage7", maxCount: 1 },
+    { name: "pollOptionImage8", maxCount: 1 },
+    { name: "pollOptionImage9", maxCount: 1 },
+    { name: "pollOptionImage10", maxCount: 1 },
+    { name: "pollOptionImage11", maxCount: 1 },
+  ]),
   PollValidation,
   PollController.update
 );

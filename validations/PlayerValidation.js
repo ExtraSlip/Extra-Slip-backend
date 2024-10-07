@@ -30,6 +30,12 @@ const PlayerValidation = async (req, res, next) => {
     about: Joi.string().optional().allow("", null).messages({
       "any.required": "About field is required",
     }),
+    image: Joi.string().optional().allow("", null).messages({
+      "any.required": "Image field is required",
+    }),
+    rating: Joi.number().optional().allow(0, null).messages({
+      "any.required": "Rating field is required",
+    }),
     stats: Joi.string().optional().allow("", null).messages({
       "any.required": "Stats field is required",
     }),
