@@ -42,11 +42,11 @@ const add = async (req, res) => {
   try {
     let payload = req.body;
     payload["createdBy"] = req.user.id;
-    if (req?.file?.stats) {
-      payload["stats"] = "/uploads/" + req.file?.stats[0]?.filename;
+    if (req?.files?.stats) {
+      payload["stats"] = "/uploads/" + req.files?.stats[0]?.filename;
     }
-    if (req?.file?.image) {
-      payload["image"] = "/uploads/" + req.file?.image[0]?.filename;
+    if (req?.files?.image) {
+      payload["image"] = "/uploads/" + req.files?.image[0]?.filename;
     }
     const player = await Player.create(payload);
     return success(res, {
@@ -64,11 +64,11 @@ const add = async (req, res) => {
 const update = async (req, res) => {
   try {
     let payload = req.body;
-    if (req?.file?.stats) {
-      payload["stats"] = "/uploads/" + req.file?.stats[0]?.filename;
+    if (req?.files?.stats) {
+      payload["stats"] = "/uploads/" + req.files?.stats[0]?.filename;
     }
-    if (req?.file?.image) {
-      payload["image"] = "/uploads/" + req.file?.image[0]?.filename;
+    if (req?.files?.image) {
+      payload["image"] = "/uploads/" + req.files?.image[0]?.filename;
     }
     let player = await Player.findOne({
       where: {
