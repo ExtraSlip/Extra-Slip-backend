@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { error, success } = require("../../handlers");
 const { Poll, PollOption, Admin } = require("../../models");
 const sequelize = require("../../utils/Connection");
@@ -79,6 +80,14 @@ const update = async (req, res) => {
       },
     });
     payload["pollOptions"] = JSON.parse(payload.pollOptions);
+    await PollOption.destroy({
+      where: {
+        pollId: req.params.id,
+        id: {
+          [Op.notIn]: payload?.pollOptions?.map((e) => e.pollOptionId),
+        },
+      },
+    });
 
     await payload?.pollOptions?.map(async (e, index) => {
       if (req.files?.[`pollOptionImage${index + 1}`]) {
