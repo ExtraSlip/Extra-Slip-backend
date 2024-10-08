@@ -15,6 +15,10 @@ const Quiz = db.define("quizzes", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = Quiz;
