@@ -8,5 +8,7 @@ router.use("/questions", require("./Question"));
 router.use("/players", require("./Player"));
 router.use("/teams", require("./Team"));
 router.use("/matchRatings", require("./MatchRating"));
+router.use("/tags", require("./Tag"));
+router.use("/categories", require("./Category"));
 
 module.exports = router;

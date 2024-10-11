@@ -9,4 +9,6 @@ module.exports = {
   TeamPlayer: require("./TeamPlayer"),
   Team: require("./Team"),
   MatchRating: require("./MatchRating"),
+  Tag: require("./Tag"),
+  Category: require("./Category"),
 };

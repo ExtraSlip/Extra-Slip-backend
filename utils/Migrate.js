@@ -12,6 +12,8 @@ const {
   MatchRating,
   Team,
   TeamPlayer,
+  Tag,
+  Category,
 } = require("../models");
 const AdminType = require("../constants/AdminType");
 

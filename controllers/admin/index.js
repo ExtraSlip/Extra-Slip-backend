@@ -6,4 +6,6 @@ module.exports = {
   TeamController: require("./TeamController"),
   PlayerController: require("./PlayerController"),
   MatchRatingController: require("./MatchRatingController"),
+  TagController: require("./TagController"),
+  CategoryController: require("./CategoryController"),
 };
