@@ -45,7 +45,7 @@ const Category = db.define("categories", {
   },
 });
 
-Category.hasOne(Category, {
+Category.belongsTo(Category, {
   foreignKey: "parentCategoryId",
   as: "parentCategory",
 });
