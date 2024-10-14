@@ -15,7 +15,7 @@ const {
   Tag,
   Category,
 } = require("../models");
-const AdminType = require("../constants/AdminType");
+const { RoleType } = require("../constants/Constants");
 
 sequelize
   .sync({ alter: true })
@@ -24,7 +24,7 @@ sequelize
     let obj = {
       name: "Admin",
       email: "admin@gmail.com",
-      type: AdminType.SUPERADMIN,
+      type: RoleType.SUPERADMIN,
       password: hash,
     };
     const [admin, created] = await Admin.findOrCreate({

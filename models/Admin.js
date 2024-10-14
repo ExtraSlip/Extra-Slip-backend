@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { db } = require("../utils");
-const AdminType = require("../constants/AdminType");
+const { RoleType } = require("../constants/Constants");
 
 const Admin = db.define("admins", {
   id: {
@@ -15,7 +15,7 @@ const Admin = db.define("admins", {
   type: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: AdminType.SUPERADMIN,
+    defaultValue: RoleType.SUPERADMIN,
   },
   email: {
     type: DataTypes.STRING,
@@ -28,6 +28,10 @@ const Admin = db.define("admins", {
   password: {
     type: DataTypes.TEXT,
     allowNull: true,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
   isBlocked: {
     type: DataTypes.BOOLEAN,
