@@ -27,6 +27,7 @@ const CategoryValidation = async (req, res, next) => {
     metaDescription: Joi.string().required().messages({
       "any.required": "Meta Description field is required",
     }),
+    image: Joi.string().optional().allow(null, ""),
   });
   await Validate(req, res, next, schema);
 };

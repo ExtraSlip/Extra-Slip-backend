@@ -29,6 +29,9 @@ const add = async (req, res) => {
   try {
     let payload = req.body;
     console.log(payload);
+    if (req.file?.path) {
+      payload["image"] = "/uploads/" + req.file?.filename;
+    }
     let category = await Category.create(payload);
     return success(res, {
       msg: "Category created successfully",
@@ -47,6 +50,9 @@ const update = async (req, res) => {
     let id = req.params.id;
     let payload = req.body;
     console.log(payload);
+    if (req.file?.path) {
+      payload["image"] = "/uploads/" + req.file?.filename;
+    }
     const category = await Category.findByPk(id);
     if (!category) {
       return error(res, {

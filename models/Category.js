@@ -35,6 +35,10 @@ const Category = db.define("categories", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   seoTitle: {
     type: DataTypes.TEXT,
     allowNull: true,
