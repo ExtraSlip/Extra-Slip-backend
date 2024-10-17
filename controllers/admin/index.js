@@ -8,4 +8,5 @@ module.exports = {
   MatchRatingController: require("./MatchRatingController"),
   TagController: require("./TagController"),
   CategoryController: require("./CategoryController"),
+  UserController: require("./UserController"),
 };

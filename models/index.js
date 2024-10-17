@@ -11,4 +11,6 @@ module.exports = {
   MatchRating: require("./MatchRating"),
   Tag: require("./Tag"),
   Category: require("./Category"),
+  AdminDetail: require("./AdminDetail"),
+  SocialLink: require("./SocialLink"),
 };

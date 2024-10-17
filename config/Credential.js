@@ -6,6 +6,12 @@ const environment = {
     PASSWORD: "",
     DB_PORT: "3306",
     SECRET_KEY: "(?9n%]9Q*k[,,.\vJ89-",
+    EMAIL_FROM: "info@extraslip.com",
+    EMAIL_PASSWORD: "Vtcx[7sE",
+    EMAIL_HOST: "smtp.hostinger.com",
+    EMAIL_SERVICE: "Hostinger",
+    EMAIL_PORT: "465",
+    BASE_URL: "http://localhost:8000",
   },
   test: {
     DATABASE: "extra_slip",
@@ -14,6 +20,12 @@ const environment = {
     PASSWORD: "User!234",
     DB_PORT: "3306",
     SECRET_KEY: "(?9n%]9Q*k[,,.\vJ89-",
+    EMAIL_FROM: "info@extraslip.com",
+    EMAIL_PASSWORD: "Vtcx[7sE",
+    EMAIL_HOST: "smtp.hostinger.com",
+    EMAIL_SERVICE: "Hostinger",
+    EMAIL_PORT: "465",
+    BASE_URL: "http://localhost:8000",
   },
   prod: {
     DATABASE: "",
@@ -22,6 +34,12 @@ const environment = {
     PASSWORD: "",
     DB_PORT: "",
     SECRET_KEY: "(?9n%]9Q*k[,,.\vJ89-",
+    EMAIL_FROM: "info@extraslip.com",
+    EMAIL_PASSWORD: "Vtcx[7sE",
+    EMAIL_HOST: "smtp.hostinger.com",
+    EMAIL_SERVICE: "Hostinger",
+    EMAIL_PORT: "465",
+    BASE_URL: "http://localhost:8000",
   },
 };
 

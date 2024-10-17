@@ -10,5 +10,6 @@ router.use("/teams", require("./Team"));
 router.use("/matchRatings", require("./MatchRating"));
 router.use("/tags", require("./Tag"));
 router.use("/categories", require("./Category"));
+router.use("/users", require("./User"));
 
 module.exports = router;

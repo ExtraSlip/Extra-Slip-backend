@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { db } = require("../utils");
-const { RoleType } = require("../constants/Constants");
+const { RoleType, RegisterStep } = require("../constants/Constants");
 
 const Admin = db.define("admins", {
   id: {
@@ -36,6 +36,11 @@ const Admin = db.define("admins", {
   isBlocked: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  registerStep: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: RegisterStep.CREATED,
   },
 });
 

@@ -6,9 +6,10 @@ const PORT = process.env.PORT;
 var cors = require("cors");
 const path = require("path");
 const { db } = require("./utils");
+const { sendEmail } = require("./utils/sendMail");
 
 app.use(cors());
-
+app.set("view engine", "ejs");
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));

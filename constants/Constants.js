@@ -13,4 +13,21 @@ const TagType = {
   TEAM: "team",
 };
 
-module.exports = { RoleType, TagType };
+const RegisterStep = {
+  CREATED: "created",
+  PROFILEUPADETD: "profileupdated",
+  COMPLETED: "completed",
+};
+
+const SocialType = {
+  FACEBOOK: "facebook",
+  TWITTER: "twitter",
+  LINKEDIN: "linkedin",
+  INSTAGRAM: "instagram",
+  DISCORD: "discord",
+  THREAD: "thread",
+  PINTREST: "pinterest",
+  YOUTUBE: "youtube",
+};
+
+module.exports = { RoleType, TagType, RegisterStep, SocialType };

@@ -14,8 +14,10 @@ const {
   TeamPlayer,
   Tag,
   Category,
+  AdminDetail,
+  SocialLink,
 } = require("../models");
-const { RoleType } = require("../constants/Constants");
+const { RoleType, RegisterStep } = require("../constants/Constants");
 
 sequelize
   .sync({ alter: true })
@@ -25,6 +27,7 @@ sequelize
       name: "Admin",
       email: "admin@gmail.com",
       type: RoleType.SUPERADMIN,
+      registerStep: RegisterStep.COMPLETED,
       password: hash,
     };
     const [admin, created] = await Admin.findOrCreate({
