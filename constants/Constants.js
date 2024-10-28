@@ -30,4 +30,15 @@ const SocialType = {
   YOUTUBE: "youtube",
 };
 
-module.exports = { RoleType, TagType, RegisterStep, SocialType };
+const Badges = {};
+
+const Stamps = {};
+
+module.exports = {
+  RoleType,
+  TagType,
+  RegisterStep,
+  SocialType,
+  Badges,
+  Stamps,
+};

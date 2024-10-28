@@ -24,6 +24,15 @@ const UserValidation = async (req, res, next) => {
     email: Joi.string().required().messages({
       "any.required": "Email field is required",
     }),
+    username: Joi.string().required().messages({
+      "any.required": "UserName field is required",
+    }),
+    badge: Joi.string().optional().allow("", null).messages({
+      "any.required": "Badge field is required",
+    }),
+    stamp: Joi.string().optional().allow("", null).messages({
+      "any.required": "Stamp field is required",
+    }),
   });
   await Validate(req, res, next, schema);
 };
@@ -53,6 +62,21 @@ const UpdateUserValidation = async (req, res, next) => {
       .messages({
         "any.required": "Type field is required",
       }),
+    badge: Joi.string().optional().allow("", null).messages({
+      "any.required": "Badge field is required",
+    }),
+    stamp: Joi.string().optional().allow("", null).messages({
+      "any.required": "Stamp field is required",
+    }),
+  });
+  await Validate(req, res, next, schema);
+};
+
+const ChangePasswordValidation = async (req, res, next) => {
+  const schema = Joi.object().keys({
+    password: Joi.string().required().messages({
+      "any.required": "Password field is required",
+    }),
   });
   await Validate(req, res, next, schema);
 };
@@ -60,4 +84,5 @@ const UpdateUserValidation = async (req, res, next) => {
 module.exports = {
   UserValidation,
   UpdateUserValidation,
+  ChangePasswordValidation,
 };

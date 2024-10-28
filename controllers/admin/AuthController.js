@@ -55,7 +55,45 @@ const login = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const payload = req.body;
+    let authorization = req.header("Authorization");
+    if (!authorization || !authorization?.includes("Bearer")) {
+      return error(res, {
+        msg: "Please provide valid token!!",
+      });
+    }
+    authorization = authorization.split(" ")[1];
+    let admin = await Admin.findOne({
+      where: {
+        verificationToken: authorization,
+      },
+    });
+    if (!admin) {
+      return error(res, {
+        msg: "Invalid link or Link expired!!",
+      });
+    }
+    const hash = await bcrypt.hash(payload.password, 10);
+    admin.password = hash;
+    admin.verificationToken = null;
+    await admin.save();
+    return success(res, {
+      msg: "Password changed successfully!!",
+      data: [],
+    });
+  } catch (err) {
+    console.log(err);
+    return error(res, {
+      msg: "Something went wrong",
+      error: err,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  changePassword,
 };

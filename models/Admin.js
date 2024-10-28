@@ -17,6 +17,15 @@ const Admin = db.define("admins", {
     allowNull: false,
     defaultValue: RoleType.SUPERADMIN,
   },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  verificationToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -36,6 +45,14 @@ const Admin = db.define("admins", {
   isBlocked: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  badge: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  stamp: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   registerStep: {
     type: DataTypes.STRING,

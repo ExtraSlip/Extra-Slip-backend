@@ -3,12 +3,13 @@ const { error, success } = require("../../handlers");
 const { Admin, AdminDetail } = require("../../models");
 const envCredential = require("../../config");
 const sequelize = require("../../utils/Connection");
-const { generateRandomPassword } = require("../../utils/Common");
+const { generateRandomPassword, generateToken } = require("../../utils/Common");
 const bcrypt = require("bcrypt");
 const { RegisterStep, RoleType } = require("../../constants/Constants");
 const { sendEmail } = require("../../utils/sendMail");
 const path = require("path");
 const ejs = require("ejs");
+const secret = "hdfhsgfer354jbjs$5#$%^";
 
 const index = async (req, res) => {
   try {
@@ -61,6 +62,16 @@ const add = async (req, res) => {
         msg: "Email already registered!!",
       });
     }
+    let username = await Admin.findOne({
+      where: {
+        username: payload.username,
+      },
+    });
+    if (username) {
+      return error(res, {
+        msg: "Username already taken!!",
+      });
+    }
     payload["registerStep"] = RegisterStep.COMPLETED;
     if ([RoleType.FREELANCER, RoleType.AUTHOR].includes(payload.type)) {
       payload["registerStep"] = RegisterStep.CREATED;
@@ -68,18 +79,23 @@ const add = async (req, res) => {
     let password = generateRandomPassword(8);
     const hash = await bcrypt.hash(password, 10);
     payload["password"] = hash;
-
+    let verificationToken = await generateToken({
+      id: payload.email,
+      SECRET_KEY: secret,
+    });
+    payload["verificationToken"] = verificationToken;
     admin = await Admin.create(payload);
     let templatePath = path.join(
       process.cwd(),
       "views/emails/register.handlebars"
     );
+
     const html = await ejs.renderFile(templatePath, {
       name: payload.name,
       password,
       email: payload.email,
       role: payload.type,
-      loginLink: `${envCredential.BASE_URL}/login`,
+      loginLink: `${envCredential.BASE_URL}/change-password?token=${verificationToken}`,
     });
     sendEmail({
       to: payload.email,
