@@ -12,6 +12,7 @@ const environment = {
     EMAIL_SERVICE: "Hostinger",
     EMAIL_PORT: "465",
     BASE_URL: "http://localhost:8000",
+    MAIL_BASE_URL: "http://localhost:3000",
   },
   test: {
     DATABASE: "extra_slip",
@@ -26,6 +27,7 @@ const environment = {
     EMAIL_SERVICE: "Hostinger",
     EMAIL_PORT: "465",
     BASE_URL: "http://localhost:8000",
+    MAIL_BASE_URL: "http://localhost:3000"
   },
   prod: {
     DATABASE: "",
@@ -40,6 +42,7 @@ const environment = {
     EMAIL_SERVICE: "Hostinger",
     EMAIL_PORT: "465",
     BASE_URL: "http://localhost:8000",
+    MAIL_BASE_URL: "https://admin.midcricket.com"
   },
 };
 

@@ -27,11 +27,8 @@ const UserValidation = async (req, res, next) => {
     username: Joi.string().required().messages({
       "any.required": "UserName field is required",
     }),
-    badge: Joi.string().optional().allow("", null).messages({
-      "any.required": "Badge field is required",
-    }),
-    stamp: Joi.string().optional().allow("", null).messages({
-      "any.required": "Stamp field is required",
+    isActive: Joi.string().required().messages({
+      "any.required": "Active field is required",
     }),
   });
   await Validate(req, res, next, schema);

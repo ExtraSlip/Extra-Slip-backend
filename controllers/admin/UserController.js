@@ -88,6 +88,8 @@ const add = async (req, res) => {
       SECRET_KEY: secret,
     });
     payload["verificationToken"] = verificationToken;
+    payload["isActive"] = payload.isActive === "1" ? true : false;
+
     admin = await Admin.create(payload);
     let templatePath = path.join(
       process.cwd(),
@@ -99,7 +101,7 @@ const add = async (req, res) => {
       password,
       email: payload.email,
       role: payload.type,
-      loginLink: `${envCredential.BASE_URL}/change-password?token=${verificationToken}`,
+      loginLink: `${envCredential.MAIL_BASE_URL}/set/password?token=${verificationToken}`,
     });
     sendEmail({
       to: payload.email,
