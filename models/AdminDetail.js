@@ -60,13 +60,13 @@ const AdminDetail = db.define("adminDetails", {
     allowNull: true,
   },
   favoriteTeam: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
     onDelete: "SET NULL", // Ensure this matches your database's foreign key setup
     onUpdate: "CASCADE",
   },
   favoriteAthlete: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: true,
     onDelete: "SET NULL", // Ensure this matches your database's foreign key setup
     onUpdate: "CASCADE",
