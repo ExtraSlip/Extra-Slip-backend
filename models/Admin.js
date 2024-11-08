@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { db } = require("../utils");
 const { RoleType, RegisterStep } = require("../constants/Constants");
+const MenuPermission = require("./MenuPermission");
 
 const Admin = db.define("admins", {
   id: {
@@ -60,5 +61,8 @@ const Admin = db.define("admins", {
     defaultValue: RegisterStep.CREATED,
   },
 });
+
+Admin.hasMany(MenuPermission, { foreignKey: "userId" })
+MenuPermission.belongsTo(Admin, { foreignKey: "userId" });
 
 module.exports = Admin;

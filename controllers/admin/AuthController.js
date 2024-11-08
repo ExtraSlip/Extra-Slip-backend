@@ -1,5 +1,5 @@
 const { error, success } = require("../../handlers");
-const { Admin } = require("../../models");
+const { Admin, AdminDetail } = require("../../models");
 const { generateToken } = require("../../utils/Common");
 const bcrypt = require("bcrypt");
 const envCredential = require("../../config");
@@ -40,11 +40,12 @@ const login = async (req, res) => {
       });
     }
     const accessToken = await generateToken({ id: admin.id, SECRET_KEY });
+    const data = await AdminDetail.findOne({ where: { adminId: admin.id } });
     delete admin.dataValues.password;
     return success(res, {
       status: true,
       msg: "Admin logged in successfully!!",
-      data: [{ admin, accessToken }],
+      data: [{ admin, accessToken, isProfileSetup: data ? true : false }],
     });
   } catch (err) {
     console.log(err);

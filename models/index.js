@@ -1,3 +1,5 @@
+
+
 module.exports = {
   User: require("./User"),
   Quiz: require("./Quiz"),
@@ -13,4 +15,7 @@ module.exports = {
   Category: require("./Category"),
   AdminDetail: require("./AdminDetail"),
   SocialLink: require("./SocialLink"),
+  MenuList: require('./MenuList'),
+  ChildMenuList: require('./ChildMenu'),
+  MenuPermission: require('./MenuPermission')
 };

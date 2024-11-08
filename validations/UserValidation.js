@@ -30,6 +30,9 @@ const UserValidation = async (req, res, next) => {
     isActive: Joi.string().required().messages({
       "any.required": "Active field is required",
     }),
+    permission: Joi.array().required().messages({
+      "any.required": "Permission field is required",
+    }),
   });
   await Validate(req, res, next, schema);
 };
@@ -42,7 +45,7 @@ const UpdateUserValidation = async (req, res, next) => {
     isBlocked: Joi.boolean().required().messages({
       "any.required": "Is Blocked field is required",
     }),
-    isActive: Joi.boolean().required().messages({
+    isActive: Joi.string().required().messages({
       "any.required": "Is Active field is required",
     }),
     type: Joi.string()
@@ -65,6 +68,9 @@ const UpdateUserValidation = async (req, res, next) => {
     stamp: Joi.string().optional().allow("", null).messages({
       "any.required": "Stamp field is required",
     }),
+    permission: Joi.array().required().messages({
+      "any.required": "Permission field is required",
+    }),
   });
   await Validate(req, res, next, schema);
 };
@@ -78,8 +84,49 @@ const ChangePasswordValidation = async (req, res, next) => {
   await Validate(req, res, next, schema);
 };
 
+const UpdateUserInfoValidation = async (req, res, next) => {
+  const schema = Joi.object().keys({
+    image: Joi.optional().allow(null, ""),
+    bio: Joi.string().required().messages({
+      "any.required": "Bio field is required",
+    }),
+    dob: Joi.string().required().messages({
+      "any.required": "Dob field is required",
+    }),
+    country: Joi.string().required().messages({
+      "any.required": "Country field is required",
+    }),
+    city: Joi.string().required().messages({
+      "any.required": "City field is required",
+    }),
+    experiece: Joi.number().required().messages({
+      "any.required": "Experice field is required",
+    }),
+    tier: Joi.string().required().messages({
+      "any.required": "Tier field is required",
+    }),
+    gender: Joi.string().required().messages({
+      "any.required": "Gender field is required",
+    }),
+    education: Joi.string().required().messages({
+      "any.required": "Education field is required",
+    }),
+    favoriteSport: Joi.string().required().messages({
+      "any.required": "Favorite Sport field is required",
+    }),
+    favoriteTeam: Joi.string().required().messages({
+      "any.required": "Favorite Team field is required",
+    }),
+    favoriteAthlete: Joi.string().required().messages({
+      "any.required": "Favorite Athlete field is required",
+    }),
+  });
+  await Validate(req, res, next, schema);
+};
+
 module.exports = {
   UserValidation,
   UpdateUserValidation,
   ChangePasswordValidation,
+  UpdateUserInfoValidation
 };

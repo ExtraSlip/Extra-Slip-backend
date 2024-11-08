@@ -16,6 +16,9 @@ const {
   Category,
   AdminDetail,
   SocialLink,
+  ChildMenuList,
+  MenuList,
+  MenuPermission
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 

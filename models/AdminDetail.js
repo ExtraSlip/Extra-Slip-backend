@@ -13,10 +13,11 @@ const AdminDetail = db.define("adminDetails", {
   adminId: {
     type: DataTypes.INTEGER,
     references: {
-      model: "admins",
+      model: Admin,
       key: "id",
     },
     allowNull: false,
+    unique: true,
   },
   image: {
     type: DataTypes.TEXT,
@@ -60,27 +61,52 @@ const AdminDetail = db.define("adminDetails", {
   },
   favoriteTeam: {
     type: DataTypes.INTEGER,
-    references: {
-      model: "teams",
-      key: "id",
-    },
     allowNull: true,
+    onDelete: "SET NULL", // Ensure this matches your database's foreign key setup
+    onUpdate: "CASCADE",
   },
   favoriteAthlete: {
     type: DataTypes.INTEGER,
-    references: {
-      model: "players",
-      key: "id",
-    },
+    allowNull: true,
+    onDelete: "SET NULL", // Ensure this matches your database's foreign key setup
+    onUpdate: "CASCADE",
+  },
+  facebookLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  twitterLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  linkedinLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  instagramLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  youtubeLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  threadLink: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
+  pininterestLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  discordLink: {
+    type: DataTypes.STRING,
     allowNull: true,
   },
 });
 
+// Define associations
 Admin.hasMany(AdminDetail, { foreignKey: "adminId" });
 AdminDetail.belongsTo(Admin, { foreignKey: "adminId" });
-Team.hasMany(AdminDetail, { foreignKey: "favoriteTeam" });
-AdminDetail.belongsTo(Team, { foreignKey: "favoriteTeam" });
-Player.hasMany(AdminDetail, { foreignKey: "favoriteAthlete" });
-AdminDetail.belongsTo(Player, { foreignKey: "favoriteAthlete" });
 
 module.exports = AdminDetail;

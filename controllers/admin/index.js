@@ -9,4 +9,5 @@ module.exports = {
   TagController: require("./TagController"),
   CategoryController: require("./CategoryController"),
   UserController: require("./UserController"),
+  MenuController: require("./MenuController"),
 };

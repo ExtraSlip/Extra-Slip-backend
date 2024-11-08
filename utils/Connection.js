@@ -13,6 +13,7 @@ const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
   dialectOptions: {
     useUTC: false,
   },
+  logging: console.log
 });
 
 console.log("DATABASE--------->", DATABASE);
