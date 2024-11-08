@@ -29,6 +29,7 @@ sequelize
     let obj = {
       name: "Admin",
       email: "admin@gmail.com",
+      username: "admin",
       type: RoleType.SUPERADMIN,
       registerStep: RegisterStep.COMPLETED,
       password: hash,
