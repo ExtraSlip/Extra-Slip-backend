@@ -5,7 +5,6 @@ const { db } = require("../utils");
 const MenuList = require("./MenuList");
 const Admin = require("./Admin");
 
-
 const MenuPermission = db.define("menupermission", {
   id: {
     type: DataTypes.INTEGER,
@@ -16,7 +15,7 @@ const MenuPermission = db.define("menupermission", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: MenuList,
+      model: "menulist",
       key: "id",
     },
     onDelete: "NO ACTION",
@@ -24,9 +23,9 @@ const MenuPermission = db.define("menupermission", {
   },
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: false, 
+    allowNull: false,
     references: {
-      model: Admin,
+      model: "admins",
       key: "id",
     },
     onDelete: "CASCADE",
@@ -35,6 +34,5 @@ const MenuPermission = db.define("menupermission", {
 });
 
 MenuPermission.belongsTo(MenuList, { foreignKey: "menuId" });
-
 
 module.exports = MenuPermission;
