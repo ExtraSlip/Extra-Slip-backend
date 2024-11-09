@@ -187,6 +187,15 @@ const update = async (req, res) => {
       });
     }
 
+    const menuPermissions = await Promise.all(menuIdsToAdd.map(menuId => ({
+      userId: req.params.id,
+      menuId
+    })));
+
+    await MenuPermission.bulkCreate(menuPermissions);
+  
+
+
     let subject = "Account activation";
     let html = "";
     let templatePath = path.join(

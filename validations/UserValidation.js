@@ -99,7 +99,7 @@ const UpdateUserInfoValidation = async (req, res, next) => {
     city: Joi.string().required().messages({
       "any.required": "City field is required",
     }),
-    experiece: Joi.number().required().messages({
+    experience: Joi.number().required().messages({
       "any.required": "Experice field is required",
     }),
     tier: Joi.string().required().messages({
