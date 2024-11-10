@@ -290,20 +290,26 @@ const updateUserInfo = async (req, res) => {
     if (req?.file?.path) {
       payload["image"] = "/uploads/" + req.file?.filename;
     }
-    const usermanagement = await AdminDetail.create({
-      adminId: id,
-      ...payload,
+    let userManagement = await AdminDetail.findOne({
+      where: {
+        adminId: id,
+      },
     });
-    if (!usermanagement) {
-      return error(res, {
-        status: false,
-        msg: "User not found",
-        statuscode: 404,
+    if (userManagement) {
+      await AdminDetail.update(payload, {
+        where: {
+          adminId: id,
+        },
+      });
+    } else {
+      userManagement = await AdminDetail.create({
+        adminId: id,
+        ...payload,
       });
     }
     return success(res, {
-      msg: "User fetched successfully dfdf",
-      data: usermanagement,
+      msg: "User fetched successfully!!",
+      data: userManagement,
     });
   } catch (err) {
     return error(res, {
