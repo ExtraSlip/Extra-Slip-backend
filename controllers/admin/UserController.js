@@ -54,9 +54,11 @@ const index = async (req, res) => {
       ],
     });
 
-    users = users.map(user => {
+    users = users.map((user) => {
       const userJson = user.toJSON(); // Convert Sequelize instance to plain object
-      userJson.menupermissions = userJson.menupermissions.map(permission => permission.menuId);
+      userJson.menupermissions = userJson.menupermissions.map(
+        (permission) => permission.menuId
+      );
       return userJson;
     });
 
@@ -149,7 +151,7 @@ const add = async (req, res) => {
 const update = async (req, res) => {
   try {
     let { permission, ...payload } = req.body;
-  
+
     let admin = await Admin.findOne({
       where: {
         id: req.params.id,
@@ -169,14 +171,20 @@ const update = async (req, res) => {
 
     const existingPermissions = await MenuPermission.findAll({
       where: { userId: req.params.id },
-      attributes: ['menuId'],
+      attributes: ["menuId"],
     });
 
-    const existingMenuIds = new Set(existingPermissions.map(permission => permission.menuId));
+    const existingMenuIds = new Set(
+      existingPermissions.map((permission) => permission.menuId)
+    );
     const newMenuIdSet = new Set(permission);
 
-    const menuIdsToAdd = [...newMenuIdSet].filter(id => !existingMenuIds.has(id));
-    const menuIdsToRemove = [...existingMenuIds].filter(id => !newMenuIdSet.has(id));
+    const menuIdsToAdd = [...newMenuIdSet].filter(
+      (id) => !existingMenuIds.has(id)
+    );
+    const menuIdsToRemove = [...existingMenuIds].filter(
+      (id) => !newMenuIdSet.has(id)
+    );
 
     if (menuIdsToRemove.length > 0) {
       await MenuPermission.destroy({
@@ -187,14 +195,14 @@ const update = async (req, res) => {
       });
     }
 
-    const menuPermissions = await Promise.all(menuIdsToAdd.map(menuId => ({
-      userId: req.params.id,
-      menuId
-    })));
+    const menuPermissions = await Promise.all(
+      menuIdsToAdd.map((menuId) => ({
+        userId: req.params.id,
+        menuId,
+      }))
+    );
 
     await MenuPermission.bulkCreate(menuPermissions);
-  
-
 
     let subject = "Account activation";
     let html = "";
@@ -279,7 +287,7 @@ const updateUserInfo = async (req, res) => {
   try {
     const { id } = req.user;
     let payload = req.body;
-    if (req.file.path) {
+    if (req?.file?.path) {
       payload["image"] = "/uploads/" + req.file?.filename;
     }
     const usermanagement = await AdminDetail.create({
@@ -305,10 +313,42 @@ const updateUserInfo = async (req, res) => {
   }
 };
 
+const updateUserInfoByAdmin = async (req, res) => {
+  try {
+    const { adminId } = req.params;
+    let payload = req.body;
+    if (req?.file?.path) {
+      payload["image"] = "/uploads/" + req.file?.filename;
+    }
+    const userManagement = await AdminDetail.findOne({
+      adminId,
+    });
+    if (!userManagement) {
+      return error(res, {
+        msg: "User not found!!",
+      });
+    }
+    await AdminDetail.update(payload, {
+      where: {
+        adminId,
+      },
+    });
+    return success(res, {
+      msg: "User updated successfully",
+      data: [],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
+
 const userInfo = async (req, res) => {
   try {
     const { id } = req.user;
-    console.log('=-as=d-=as-d=asd=as-d=-d', id)
+    console.log("=-as=d-=as-d=asd=as-d=-d", id);
     const user = await Admin.findAll({
       where: { id: id },
       include: [
@@ -341,7 +381,7 @@ const userInfo = async (req, res) => {
 
 const getUserList = async (req, res) => {
   try {
-    const { page=1, limit=10, type } = req.query;
+    const { page = 1, limit = 10, type } = req.query;
     const user = await Admin.findAll({
       where: {
         type: type ? type : null,
@@ -398,4 +438,5 @@ module.exports = {
   userInfo,
   getUserList,
   deleteAll,
+  updateUserInfoByAdmin,
 };

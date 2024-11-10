@@ -100,7 +100,7 @@ const UpdateUserInfoValidation = async (req, res, next) => {
       "any.required": "City field is required",
     }),
     experience: Joi.number().required().messages({
-      "any.required": "Experice field is required",
+      "any.required": "Experience field is required",
     }),
     tier: Joi.string().required().messages({
       "any.required": "Tier field is required",
@@ -128,5 +128,5 @@ module.exports = {
   UserValidation,
   UpdateUserValidation,
   ChangePasswordValidation,
-  UpdateUserInfoValidation
+  UpdateUserInfoValidation,
 };
