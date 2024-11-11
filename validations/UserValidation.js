@@ -120,6 +120,14 @@ const UpdateUserInfoValidation = async (req, res, next) => {
     favoriteAthlete: Joi.string().required().messages({
       "any.required": "Favorite Athlete field is required",
     }),
+    twitterLink: Joi.string().optional().allow(null, ""),
+    linkedinLink: Joi.string().optional().allow(null, ""),
+    facebookLink: Joi.string().optional().allow(null, ""),
+    instagramLink: Joi.string().optional().allow(null, ""),
+    youtubeLink: Joi.string().optional().allow(null, ""),
+    discordLink: Joi.string().optional().allow(null, ""),
+    pininterestLink: Joi.string().optional().allow(null, ""),
+    threadLink: Joi.string().optional().allow(null, ""),
   });
   await Validate(req, res, next, schema);
 };
