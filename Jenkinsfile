@@ -15,17 +15,17 @@ pipeline {
         stage("Fetch latest code from git") {
             when {
                 expression {
-                        return env.BRANCH == "master"
+                        return env.BRANCH == "main"
                 }
             }
             steps {
-                sh "cd /var/www/html/Extra-Slip-backend && git pull origin master"
+                sh "cd /var/www/html/Extra-Slip-backend && git pull origin main"
             }
         }
         stage("Install dependancies") {
             when {
                 expression {
-                        return env.BRANCH == "master"
+                        return env.BRANCH == "main"
                 }
             }
             steps {
@@ -35,7 +35,7 @@ pipeline {
         stage("Run Migrations") {
             when {
                 expression {
-                        return env.BRANCH == "master"
+                        return env.BRANCH == "main"
                 }
             }
             steps {
@@ -45,7 +45,7 @@ pipeline {
         stage("Restart Server") {
             when {
                 expression {
-                        return env.BRANCH == "master"
+                        return env.BRANCH == "main"
                 }
             }
             steps {

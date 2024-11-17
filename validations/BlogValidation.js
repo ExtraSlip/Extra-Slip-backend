@@ -1,0 +1,47 @@
+const Joi = require("joi");
+const { Validate } = require("./Validate");
+const { TopicTypes } = require("../constants/Constants");
+
+const topicObject = Joi.object().keys({
+  type: Joi.string()
+    .required()
+    .valid(
+      TopicTypes.CATEGORY,
+      TopicTypes.OTHER,
+      TopicTypes.PLAYER,
+      TopicTypes.TAG
+    )
+    .messages({
+      "any.required": "Type field is required",
+    }),
+  topicId: Joi.number().integer().optional().allow(null, 0).messages({
+    "any.required": "Topic id field is required",
+  }),
+  name: Joi.string().optional().allow(null, "").messages({
+    "any.required": "Name field is required",
+  }),
+});
+
+const BlogValidation = async (req, res, next) => {
+  const schema = Joi.object().keys({
+    title: Joi.string().required().messages({
+      "any.required": "Title field is required",
+    }),
+    categoryId: Joi.number().integer().required().messages({
+      "any.required": "Category id field is required",
+    }),
+    subTitle: Joi.string().required().messages({
+      "any.required": "Sub Title field is required",
+    }),
+    description: Joi.string().required().messages({
+      "any.required": "Description field is required",
+    }),
+    featuredImage: Joi.string().optional().allow(null, "").messages({}),
+    topics: Joi.string().optional().allow("[]"),
+  });
+  await Validate(req, res, next, schema);
+};
+
+module.exports = {
+  BlogValidation,
+};

@@ -12,5 +12,6 @@ router.use("/tags", require("./Tag"));
 router.use("/categories", require("./Category"));
 router.use("/users", require("./User"));
 router.use("/menulist", require("./MenuList"));
+router.use("/blogs", require("./Blog"));
 
 module.exports = router;

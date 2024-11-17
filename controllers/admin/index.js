@@ -10,4 +10,5 @@ module.exports = {
   CategoryController: require("./CategoryController"),
   UserController: require("./UserController"),
   MenuController: require("./MenuController"),
+  BlogController: require("./BlogController"),
 };

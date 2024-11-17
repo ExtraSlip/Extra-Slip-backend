@@ -34,6 +34,25 @@ const Badges = {};
 
 const Stamps = {};
 
+const BlogStatus = {
+  PENDING: 0,
+  APPROVED: 1,
+  REJECTED: 2,
+  PUBLISHED: 3,
+};
+
+const CommentStatus = {
+  APPROVED: 0,
+  DELETED: 1,
+};
+
+const TopicTypes = {
+  TAG: "tag",
+  PLAYER: "player",
+  CATEGORY: "category",
+  OTHER: "other",
+};
+
 module.exports = {
   RoleType,
   TagType,
@@ -41,4 +60,7 @@ module.exports = {
   SocialType,
   Badges,
   Stamps,
+  BlogStatus,
+  CommentStatus,
+  TopicTypes,
 };
