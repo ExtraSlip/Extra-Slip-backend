@@ -22,20 +22,41 @@ const topicsList = async (req, res) => {
     let topics = [];
     let tags = await Tag.findAll({
       where: query,
-      attributes: ["id", "name", [sequelize.literal(`'tag'`), "type"]],
+      attributes: [
+        ["id", "topicId"],
+        "name",
+        [sequelize.literal(`'tag'`), "type"],
+        [sequelize.literal(`'0'`), "id"],
+      ],
       raw: true,
     });
     let categories = await Category.findAll({
       where: query,
-      attributes: ["id", "name", [sequelize.literal(`'category'`), "type"]],
+      attributes: [
+        ["id", "topicId"],
+        "name",
+        [sequelize.literal(`'category'`), "type"],
+        [sequelize.literal(`'0'`), "id"],
+      ],
       raw: true,
     });
     let players = await Player.findAll({
       where: query,
-      attributes: ["id", "name", [sequelize.literal(`'player'`), "type"]],
+      attributes: [
+        ["id", "topicId"],
+        "name",
+        [sequelize.literal(`'player'`), "type"],
+        [sequelize.literal(`'0'`), "id"],
+      ],
       raw: true,
     });
     topics = [...tags, ...categories, ...players];
+    topics = topics.map((e, index) => {
+      return {
+        ...e,
+        id: index + 1,
+      };
+    });
     return success(res, {
       msg: "Topics listed successfully",
       data: topics,
