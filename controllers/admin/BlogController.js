@@ -10,6 +10,7 @@ const {
   Admin,
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
+const { TopicTypes } = require("../../constants/Constants");
 
 const topicsList = async (req, res) => {
   try {
@@ -100,6 +101,50 @@ const index = async (req, res) => {
           },
         ],
       });
+      if (blogs.length == 0) {
+        return error(res, {
+          msg: "Blog not found",
+          error: [],
+        });
+      }
+      blogs = await Promise.all(
+        blogs.map(async (e) => {
+          let ele = e.toJSON();
+          ele.blogTopics = await Promise.all(
+            ele?.blogTopics?.map(async (x) => {
+              switch (x.type) {
+                case TopicTypes.CATEGORY:
+                  x["topic"] = await Category.findOne({
+                    where: { id: x.topicId },
+                    attributes: ["id", "name"],
+                  });
+                  break;
+                case TopicTypes.PLAYER:
+                  x["topic"] = await Player.findOne({
+                    where: { id: x.topicId },
+                    attributes: ["id", "name"],
+                  });
+                  break;
+                case TopicTypes.TAG:
+                  x["topic"] = await Tag.findOne({
+                    where: { id: x.topicId },
+                    attributes: ["id", "name"],
+                  });
+                  break;
+
+                default:
+                  x["topic"] = {
+                    id: 0,
+                    name: x.name,
+                  };
+                  break;
+              }
+              return x;
+            })
+          );
+          return ele;
+        })
+      );
     } else {
       blogs = await Blog.findAll({
         where: query,
