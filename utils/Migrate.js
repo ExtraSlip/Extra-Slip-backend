@@ -18,7 +18,11 @@ const {
   SocialLink,
   ChildMenuList,
   MenuList,
-  MenuPermission
+  MenuPermission,
+  Blog,
+  BlogBookmark,
+  BlogComment,
+  BlogTopic,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 
@@ -40,6 +44,24 @@ sequelize
       },
       defaults: {
         ...obj,
+      },
+    });
+    const userHash = await bcrypt.hash("user@12", 10);
+    let userObj = {
+      userName: "demo_user",
+      email: "demo@gmail.com",
+      firstName: "Demo",
+      lastName: "User",
+      userType: "user",
+      mobileNo: "1234567890",
+      password: userHash,
+    };
+    const [user, userCreated] = await User.findOrCreate({
+      where: {
+        email: userObj.email,
+      },
+      defaults: {
+        ...userObj,
       },
     });
     console.log("table created successfully!");

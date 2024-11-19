@@ -19,4 +19,5 @@ module.exports = {
   Blog: require("./Blog"),
   BlogTopic: require("./BlogTopic"),
   BlogComment: require("./BlogComment"),
+  BlogBookmark: require("./BlogBookmark"),
 };
