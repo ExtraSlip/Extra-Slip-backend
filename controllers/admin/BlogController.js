@@ -7,6 +7,7 @@ const {
   Tag,
   Category,
   Player,
+  Admin,
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
 
@@ -75,17 +76,58 @@ const index = async (req, res) => {
     if (req.query?.id) {
       query["id"] = req.query.id;
     }
-    let blogs = await Blog.findAll({
-      where: query,
-      include: [
-        {
-          model: BlogTopic,
-        },
-        {
-          model: BlogComment,
-        },
-      ],
-    });
+
+    let blogs = [];
+    if (req.query.id) {
+      blogs = await Blog.findAll({
+        where: query,
+        include: [
+          {
+            model: BlogTopic,
+            attributes: ["id", "topicId", "type", "name", "blogId"],
+          },
+          {
+            model: BlogComment,
+            attributes: ["id", "blogId", "userId", "comment", "createdAt"],
+          },
+          {
+            model: Category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: Admin,
+            attributes: ["id", "name", "image"],
+          },
+        ],
+      });
+    } else {
+      blogs = await Blog.findAll({
+        where: query,
+        attributes: [
+          "id",
+          "title",
+          "featuredImage",
+          "createdAt",
+          "likes",
+          [sequelize.fn("COUNT", sequelize.col("blogComments.id")), "comments"],
+        ],
+        include: [
+          {
+            model: BlogComment,
+            attributes: [],
+          },
+          {
+            model: Category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: Admin,
+            attributes: ["id", "name", "image"],
+          },
+        ],
+      });
+    }
+
     return success(res, {
       msg: "Blog listed successfully",
       data: blogs,
