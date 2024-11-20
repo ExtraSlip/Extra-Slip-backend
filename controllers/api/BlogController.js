@@ -83,6 +83,7 @@ const get = async (req, res) => {
         },
       },
       attributes: [
+        "id",
         "title",
         "subTitle",
         "featuredImage",
@@ -109,6 +110,7 @@ const get = async (req, res) => {
         },
       },
       attributes: [
+        "id",
         "title",
         "subTitle",
         "featuredImage",
