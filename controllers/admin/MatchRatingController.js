@@ -45,7 +45,7 @@ const add = async (req, res) => {
       });
     }
     if (req.file) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     const matchRating = await MatchRating.create(payload);
     return success(res, {
@@ -70,7 +70,7 @@ const update = async (req, res) => {
       });
     }
     if (req.file) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     const matchRating = await MatchRating.findOne({
       where: {

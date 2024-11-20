@@ -27,7 +27,7 @@ const add = async (req, res) => {
   try {
     let payload = req.body;
     if (req.file.path) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     let question = await Question.create(payload);
     return success(res, {
@@ -53,7 +53,7 @@ const update = async (req, res) => {
     }
 
     if (req.file?.path) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
 
     await Question.update(payload, {

@@ -13,6 +13,9 @@ const environment = {
     EMAIL_PORT: "465",
     BASE_URL: "http://localhost:8000",
     MAIL_BASE_URL: "http://localhost:3000",
+    CLOUD_NAME: "dxsf7nhsj",
+    CLOUDINARY_API_KEY: "118123687597686",
+    CLOUDINARY_API_SECRET: "cKKqtLCUm3dwi4cPMczWDsb1nfo",
   },
   test: {
     DATABASE: "extra_slip",
@@ -28,6 +31,9 @@ const environment = {
     EMAIL_PORT: "465",
     BASE_URL: "https://api.midcricket.com",
     MAIL_BASE_URL: "https://admin.midcricket.com",
+    CLOUD_NAME: "dxsf7nhsj",
+    CLOUDINARY_API_KEY: "118123687597686",
+    CLOUDINARY_API_SECRET: "cKKqtLCUm3dwi4cPMczWDsb1nfo",
   },
   prod: {
     DATABASE: "extra_slip",
@@ -43,6 +49,9 @@ const environment = {
     EMAIL_PORT: "465",
     BASE_URL: "https://api.midcricket.com",
     MAIL_BASE_URL: "https://admin.midcricket.com",
+    CLOUD_NAME: "dxsf7nhsj",
+    CLOUDINARY_API_KEY: "118123687597686",
+    CLOUDINARY_API_SECRET: "cKKqtLCUm3dwi4cPMczWDsb1nfo",
   },
 };
 

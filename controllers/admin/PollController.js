@@ -48,7 +48,7 @@ const add = async (req, res) => {
     payload?.pollOptions?.map((element, index) => {
       if (req.files?.[`pollOptionImage${index + 1}`]) {
         payload.pollOptions[index]["image"] =
-          "/uploads/" + req.files?.[`pollOptionImage${index + 1}`][0].filename;
+          req.files?.[`pollOptionImage${index + 1}`][0].path;
       }
       payload.pollOptions[index]["pollId"] = poll.id;
     });
@@ -91,8 +91,7 @@ const update = async (req, res) => {
 
     await payload?.pollOptions?.map(async (e, index) => {
       if (req.files?.[`pollOptionImage${index + 1}`]) {
-        e.image =
-          "/uploads/" + req.files?.[`pollOptionImage${index + 1}`][0].filename;
+        e.image = req.files?.[`pollOptionImage${index + 1}`][0].path;
       }
       if (e.pollOptionId) {
         await PollOption.update(e, {

@@ -43,10 +43,10 @@ const add = async (req, res) => {
     let payload = req.body;
     payload["createdBy"] = req.user.id;
     if (req?.files?.stats) {
-      payload["stats"] = "/uploads/" + req.files?.stats[0]?.filename;
+      payload["stats"] = req.files?.stats[0]?.path;
     }
     if (req?.files?.image) {
-      payload["image"] = "/uploads/" + req.files?.image[0]?.filename;
+      payload["image"] = req.files?.image[0]?.path;
     }
     const player = await Player.create(payload);
     return success(res, {
@@ -65,10 +65,10 @@ const update = async (req, res) => {
   try {
     let payload = req.body;
     if (req?.files?.stats) {
-      payload["stats"] = "/uploads/" + req.files?.stats[0]?.filename;
+      payload["stats"] = req.files?.stats[0]?.path;
     }
     if (req?.files?.image) {
-      payload["image"] = "/uploads/" + req.files?.image[0]?.filename;
+      payload["image"] = req.files?.image[0]?.path;
     }
     let player = await Player.findOne({
       where: {

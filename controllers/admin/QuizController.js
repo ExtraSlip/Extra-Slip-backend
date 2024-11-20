@@ -37,7 +37,7 @@ const add = async (req, res) => {
   try {
     let payload = req.body;
     if (req.file) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     let quiz = await Quiz.create(payload);
     return success(res, {
@@ -56,7 +56,7 @@ const update = async (req, res) => {
   try {
     let payload = req.body;
     if (req.file) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     let quiz = await Quiz.findByPk(req.params.id);
     if (!quiz) {

@@ -288,7 +288,7 @@ const updateUserInfo = async (req, res) => {
     const { id } = req.user;
     let payload = req.body;
     if (req?.file?.path) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     let userManagement = await AdminDetail.findOne({
       where: {
@@ -324,7 +324,7 @@ const updateUserInfoByAdmin = async (req, res) => {
     const { adminId } = req.params;
     let payload = req.body;
     if (req?.file?.path) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     const userManagement = await AdminDetail.findOne({
       adminId,

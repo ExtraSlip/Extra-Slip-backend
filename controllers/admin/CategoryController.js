@@ -30,7 +30,7 @@ const add = async (req, res) => {
     let payload = req.body;
     console.log(payload);
     if (req.file?.path) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     let category = await Category.create(payload);
     return success(res, {
@@ -51,7 +51,7 @@ const update = async (req, res) => {
     let payload = req.body;
     console.log(payload);
     if (req.file?.path) {
-      payload["image"] = "/uploads/" + req.file?.filename;
+      payload["image"] = req.file?.path;
     }
     const category = await Category.findByPk(id);
     if (!category) {

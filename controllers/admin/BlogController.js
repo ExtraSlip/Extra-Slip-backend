@@ -194,8 +194,9 @@ const index = async (req, res) => {
 const add = async (req, res) => {
   try {
     let payload = req.body;
+    console.log(req.file);
     if (req.file) {
-      payload["featuredImage"] = "/uploads/" + req.file?.filename;
+      payload["featuredImage"] = req.file?.path;
     }
     const topics = JSON.parse(payload?.topics);
     payload["createdBy"] = req.user.id;
@@ -220,7 +221,7 @@ const update = async (req, res) => {
   try {
     let payload = req.body;
     if (req.file) {
-      payload["featuredImage"] = "/uploads/" + req.file?.filename;
+      payload["featuredImage"] = req.file?.path;
     }
     const topics = JSON.parse(payload?.topics);
     await Blog.update(payload, { where: { id: req.params.id } });
