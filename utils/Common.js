@@ -27,6 +27,12 @@ const generateToken = async (data) => {
   return accessToken;
 };
 
+const getPageAndOffset = (pageNo, limit) => {
+  pageNo = pageNo ? pageNo : 1;
+  limit = limit ? limit : 10;
+  return { offset: parseInt((pageNo - 1) * limit), limit: parseInt(limit) };
+};
+
 const generateRandomPassword = (length) => {
   const chars =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@$&";
@@ -42,4 +48,5 @@ module.exports = {
   getReqInformation,
   generateToken,
   generateRandomPassword,
+  getPageAndOffset,
 };

@@ -154,12 +154,18 @@ const index = async (req, res) => {
           "featuredImage",
           "createdAt",
           "likes",
-          [sequelize.fn("COUNT", sequelize.col("blogComments.id")), "comments"],
+          [
+            sequelize.literal(
+              "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+            ),
+            "comments",
+          ],
         ],
         include: [
           {
             model: BlogComment,
             attributes: [],
+            required: false,
           },
           {
             model: Category,

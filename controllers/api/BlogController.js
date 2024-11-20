@@ -7,7 +7,9 @@ const {
   Admin,
   User,
   BlogBookmark,
+  Category,
 } = require("../../models");
+const { getPageAndOffset } = require("../../utils/Common");
 
 const get = async (req, res) => {
   try {
@@ -51,14 +53,24 @@ const get = async (req, res) => {
 
 const index = async (req, res) => {
   try {
-    let { categoryId } = req.query;
+    let { categoryId, page = 1, limit = 10 } = req.query;
+    console.log({ page, limit });
     let query = {};
+    let pagination = getPageAndOffset(page, limit);
     if (categoryId) {
       query["categoryId"] = categoryId;
     }
     let blogs = await Blog.findAll({
       where: query,
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+      ],
       attributes: ["title", "featuredImage", "id"],
+      limit: pagination.limit,
+      offset: pagination.offset,
     });
     return success(res, {
       msg: "Blogs listed successfully!!",
