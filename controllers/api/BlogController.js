@@ -8,8 +8,12 @@ const {
   User,
   BlogBookmark,
   Category,
+  Player,
+  Tag,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
+const { TopicTypes } = require("../../constants/Constants");
+const sequelize = require("../../utils/Connection");
 
 const get = async (req, res) => {
   try {
@@ -24,6 +28,7 @@ const get = async (req, res) => {
         },
         {
           model: BlogComment,
+          attributes: [],
         },
         {
           model: Admin,
@@ -38,7 +43,91 @@ const get = async (req, res) => {
       },
     });
     blog = blog.toJSON();
+    blog.blogTopics = await Promise.all(
+      blog?.blogTopics?.map(async (x) => {
+        switch (x.type) {
+          case TopicTypes.CATEGORY:
+            x["topic"] = await Category.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name"],
+            });
+            break;
+          case TopicTypes.PLAYER:
+            x["topic"] = await Player.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name"],
+            });
+            break;
+          case TopicTypes.TAG:
+            x["topic"] = await Tag.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name"],
+            });
+            break;
+
+          default:
+            x["topic"] = {
+              id: 0,
+              name: x.name,
+            };
+            break;
+        }
+        return x;
+      })
+    );
     blog.isBookmarked = bookmarked ? true : false;
+    blog.extraSlipRecommended = await Blog.findAll({
+      where: {
+        id: {
+          [Op.ne]: blog.id,
+        },
+      },
+      attributes: [
+        "title",
+        "subTitle",
+        "featuredImage",
+        "createdAt",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+          ),
+          "comments",
+        ],
+      ],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+      ],
+      limit: 5,
+    });
+    blog.recommended = await Blog.findAll({
+      where: {
+        id: {
+          [Op.ne]: blog.id,
+        },
+      },
+      attributes: [
+        "title",
+        "subTitle",
+        "featuredImage",
+        "createdAt",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+          ),
+          "comments",
+        ],
+      ],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+      ],
+      limit: 5,
+    });
     return success(res, {
       msg: "Blog listed successfully!!",
       data: [blog],
