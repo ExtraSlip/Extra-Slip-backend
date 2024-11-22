@@ -12,6 +12,7 @@ pipeline {
                 echo "BRANCH is ${env.BRANCH}"
             }
         }
+        
         stage("Staging Fetch latest code from git") {
             when {
                 expression {
