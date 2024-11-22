@@ -12,7 +12,17 @@ pipeline {
                 echo "BRANCH is ${env.BRANCH}"
             }
         }
-        stage("Fetch latest code from git") {
+        stage("Staging Fetch latest code from git") {
+            when {
+                expression {
+                        return env.BRANCH == "develop"
+                }
+            }
+            steps {
+                sh "cd /var/www/html/staging/Extra-Slip-backend && git pull origin develop"
+            }
+        }
+        stage("Prod Fetch latest code from git") {
             when {
                 expression {
                         return env.BRANCH == "main"
@@ -22,17 +32,37 @@ pipeline {
                 sh "cd /var/www/html/Extra-Slip-backend && git pull origin main"
             }
         }
-        stage("Install dependancies") {
+        stage("Staging Install dependancies") {
+            when {
+                expression {
+                        return env.BRANCH == "develop"
+                }
+            }
+            steps {
+                sh "cd /var/www/html/staging/Extra-Slip-backend && npm i --legacy-peer-deps"
+            }
+        }
+        stage("Prod Install dependancies") {
             when {
                 expression {
                         return env.BRANCH == "main"
                 }
             }
             steps {
-                sh "cd /var/www/html/Extra-Slip-backend && npm i"
+                sh "cd /var/www/html/Extra-Slip-backend && npm i --legacy-peer-deps"
             }
         }
-        stage("Run Migrations") {
+        stage("Staging Run Migrations") {
+            when {
+                expression {
+                        return env.BRANCH == "develop"
+                }
+            }
+            steps {
+                sh "cd /var/www/html/staging/Extra-Slip-backend && npm run migrate"
+            }
+        }
+        stage("Prod Run Migrations") {
             when {
                 expression {
                         return env.BRANCH == "main"
@@ -42,7 +72,17 @@ pipeline {
                 sh "cd /var/www/html/Extra-Slip-backend && npm run migrate"
             }
         }
-        stage("Restart Server") {
+        stage("Staging Restart Server") {
+            when {
+                expression {
+                        return env.BRANCH == "develop"
+                }
+            }
+            steps {
+                sh "pm2 restart 2"
+            }
+        }
+        stage("Prod Restart Server") {
             when {
                 expression {
                         return env.BRANCH == "main"
