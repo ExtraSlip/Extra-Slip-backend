@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 sh "cd /var/www/html/staging/Extra-Slip-backend && git config --global --add safe.directory /var/www/html/staging/Extra-Slip-backend"
-                sh "cd /var/www/html/staging/Extra-Slip-backend && sudo chmod -R u+rw .git"
+                sh "cd /var/www/html/staging/Extra-Slip-backend && chown -R $USER:$USER .git"
                 sh "cd /var/www/html/staging/Extra-Slip-backend && git pull origin develop"
             }
         }
