@@ -12,7 +12,7 @@ pipeline {
                 echo "BRANCH is ${env.BRANCH}"
             }
         }
-        
+
         stage("Staging Fetch latest code from git") {
             when {
                 expression {
@@ -20,6 +20,7 @@ pipeline {
                 }
             }
             steps {
+                sh "cd /var/www/html/staging/Extra-Slip-backend && git config --global --add safe.directory /var/www/html/staging/Extra-Slip-backend"
                 sh "cd /var/www/html/staging/Extra-Slip-backend && git pull origin develop"
             }
         }
@@ -30,6 +31,7 @@ pipeline {
                 }
             }
             steps {
+                sh "cd /var/www/html/Extra-Slip-backend && git config --global --add safe.directory"
                 sh "cd /var/www/html/Extra-Slip-backend && git pull origin main"
             }
         }
