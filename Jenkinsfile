@@ -83,7 +83,7 @@ pipeline {
                 }
             }
             steps {
-                sh "pm2 restart 2"
+                sh "sudo pm2 restart 2"
             }
         }
         stage("Prod Restart Server") {
@@ -93,7 +93,7 @@ pipeline {
                 }
             }
             steps {
-                sh "pm2 restart 0"
+                sh "sudo pm2 restart 0"
             }
         }
     }
