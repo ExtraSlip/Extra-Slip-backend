@@ -25,6 +25,7 @@ const {
   BlogTopic,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
+const { MenuSeeder } = require("../seeder");
 
 sequelize
   .sync({ alter: true })
@@ -64,6 +65,7 @@ sequelize
         ...userObj,
       },
     });
+    await MenuSeeder(admin.id);
     console.log("table created successfully!");
   })
   .catch((error) => {

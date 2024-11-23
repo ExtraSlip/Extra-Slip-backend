@@ -18,7 +18,7 @@ const environment = {
     CLOUDINARY_API_SECRET: "cKKqtLCUm3dwi4cPMczWDsb1nfo",
   },
   test: {
-    DATABASE: "extra_slip",
+    DATABASE: "extra_slip_staging",
     USER: "extra_slip_user",
     HOST: "localhost",
     PASSWORD: "User!234",
