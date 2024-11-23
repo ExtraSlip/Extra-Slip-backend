@@ -43,7 +43,6 @@ pipeline {
                 }
             }
             steps {
-                sh "cd /var/www/html/staging/Extra-Slip-backend && npm i -g semver"
                 sh "cd /var/www/html/staging/Extra-Slip-backend && npm i --legacy-peer-deps"
             }
         }
@@ -54,7 +53,6 @@ pipeline {
                 }
             }
             steps {
-                sh "cd /var/www/html/Extra-Slip-backend && npm i -g semver"
                 sh "cd /var/www/html/Extra-Slip-backend && npm i --legacy-peer-deps"
             }
         }
