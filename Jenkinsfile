@@ -31,6 +31,7 @@ pipeline {
                         return env.BRANCH == "main"
                 }
             }
+            
             steps {
                 sh "cd /var/www/html/Extra-Slip-backend && git config --global --add safe.directory /var/www/html/Extra-Slip-backend"
                 sh "cd /var/www/html/Extra-Slip-backend && sudo chown -R $USER:$USER .git"
