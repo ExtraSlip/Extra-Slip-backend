@@ -46,12 +46,6 @@ const get = async (req, res) => {
     blog.blogTopics = await Promise.all(
       blog?.blogTopics?.map(async (x) => {
         switch (x.type) {
-          case TopicTypes.CATEGORY:
-            x["topic"] = await Category.findOne({
-              where: { id: x.topicId },
-              attributes: ["id", "name"],
-            });
-            break;
           case TopicTypes.PLAYER:
             x["topic"] = await Player.findOne({
               where: { id: x.topicId },

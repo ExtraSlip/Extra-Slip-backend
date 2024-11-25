@@ -5,12 +5,7 @@ const { TopicTypes } = require("../constants/Constants");
 const topicObject = Joi.object().keys({
   type: Joi.string()
     .required()
-    .valid(
-      TopicTypes.CATEGORY,
-      TopicTypes.OTHER,
-      TopicTypes.PLAYER,
-      TopicTypes.TAG
-    )
+    .valid(TopicTypes.OTHER, TopicTypes.PLAYER, TopicTypes.TAG)
     .messages({
       "any.required": "Type field is required",
     }),

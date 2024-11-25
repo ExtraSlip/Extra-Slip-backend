@@ -32,16 +32,6 @@ const topicsList = async (req, res) => {
       ],
       raw: true,
     });
-    let categories = await Category.findAll({
-      where: query,
-      attributes: [
-        ["id", "topicId"],
-        "name",
-        [sequelize.literal(`'category'`), "type"],
-        [sequelize.literal(`'0'`), "id"],
-      ],
-      raw: true,
-    });
     let players = await Player.findAll({
       where: query,
       attributes: [
@@ -52,7 +42,7 @@ const topicsList = async (req, res) => {
       ],
       raw: true,
     });
-    topics = [...tags, ...categories, ...players];
+    topics = [...tags, ...players];
     topics = topics.map((e, index) => {
       return {
         ...e,
@@ -113,12 +103,6 @@ const index = async (req, res) => {
           ele.blogTopics = await Promise.all(
             ele?.blogTopics?.map(async (x) => {
               switch (x.type) {
-                case TopicTypes.CATEGORY:
-                  x["topic"] = await Category.findOne({
-                    where: { id: x.topicId },
-                    attributes: ["id", "name"],
-                  });
-                  break;
                 case TopicTypes.PLAYER:
                   x["topic"] = await Player.findOne({
                     where: { id: x.topicId },
