@@ -39,6 +39,12 @@ const BlogStatus = {
   PUBLISHED: 1,
 };
 
+const BlogFilterType = {
+  Total: 0,
+  Mine: 1,
+  Deleted: 2,
+};
+
 const CommentStatus = {
   APPROVED: 0,
   DELETED: 1,
@@ -60,4 +66,5 @@ module.exports = {
   BlogStatus,
   CommentStatus,
   TopicTypes,
+  BlogFilterType,
 };

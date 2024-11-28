@@ -10,7 +10,7 @@ const {
   Admin,
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
-const { TopicTypes } = require("../../constants/Constants");
+const { TopicTypes, BlogFilterType } = require("../../constants/Constants");
 
 const topicsList = async (req, res) => {
   try {
@@ -68,6 +68,25 @@ const index = async (req, res) => {
       query["id"] = req.query.id;
     }
 
+    let { type = BlogFilterType.Total } = req.query;
+    console.log({ type });
+    type = parseInt(type);
+    switch (type) {
+      case BlogFilterType.Total:
+        // need to add condition if required
+        break;
+      case BlogFilterType.Mine:
+        query["createdBy"] = req.user.id;
+        break;
+      case BlogFilterType.Deleted:
+        query["deletedAt"] = {
+          [Op.ne]: null,
+        };
+        break;
+      default:
+        console.log("Default");
+        break;
+    }
     let blogs = [];
     if (req.query.id) {
       blogs = await Blog.findAll({
@@ -106,6 +125,7 @@ const index = async (req, res) => {
           "featuredImage",
           "createdAt",
           "likes",
+          "status",
           [
             sequelize.literal(
               "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
@@ -113,6 +133,7 @@ const index = async (req, res) => {
             "comments",
           ],
         ],
+        paranoid: false,
         include: [
           {
             model: BlogComment,
@@ -166,6 +187,21 @@ const index = async (req, res) => {
         return ele;
       })
     );
+    let totalCount = await Blog.count({ paranoid: false });
+    let deletedCount = await Blog.count({
+      where: {
+        deletedAt: {
+          [Op.ne]: null,
+        },
+      },
+      paranoid: false,
+    });
+    let mineCount = await Blog.count({
+      where: {
+        createdBy: req.user.id,
+      },
+      paranoid: false,
+    });
 
     return success(res, {
       msg: "Blog listed successfully",
