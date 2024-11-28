@@ -97,38 +97,6 @@ const index = async (req, res) => {
           error: [],
         });
       }
-      blogs = await Promise.all(
-        blogs.map(async (e) => {
-          let ele = e.toJSON();
-          ele.blogTopics = await Promise.all(
-            ele?.blogTopics?.map(async (x) => {
-              switch (x.type) {
-                case TopicTypes.PLAYER:
-                  x["topic"] = await Player.findOne({
-                    where: { id: x.topicId },
-                    attributes: ["id", "name"],
-                  });
-                  break;
-                case TopicTypes.TAG:
-                  x["topic"] = await Tag.findOne({
-                    where: { id: x.topicId },
-                    attributes: ["id", "name"],
-                  });
-                  break;
-
-                default:
-                  x["topic"] = {
-                    id: 0,
-                    name: x.name,
-                  };
-                  break;
-              }
-              return x;
-            })
-          );
-          return ele;
-        })
-      );
     } else {
       blogs = await Blog.findAll({
         where: query,
@@ -152,6 +120,10 @@ const index = async (req, res) => {
             required: false,
           },
           {
+            model: BlogTopic,
+            attributes: ["topicId", "type", "name"],
+          },
+          {
             model: Category,
             attributes: ["id", "name"],
           },
@@ -162,6 +134,38 @@ const index = async (req, res) => {
         ],
       });
     }
+    blogs = await Promise.all(
+      blogs.map(async (e) => {
+        let ele = e.toJSON();
+        ele.blogTopics = await Promise.all(
+          ele?.blogTopics?.map(async (x) => {
+            switch (x.type) {
+              case TopicTypes.PLAYER:
+                x["topic"] = await Player.findOne({
+                  where: { id: x.topicId },
+                  attributes: ["id", "name"],
+                });
+                break;
+              case TopicTypes.TAG:
+                x["topic"] = await Tag.findOne({
+                  where: { id: x.topicId },
+                  attributes: ["id", "name"],
+                });
+                break;
+
+              default:
+                x["topic"] = {
+                  id: 0,
+                  name: x.name,
+                };
+                break;
+            }
+            return x;
+          })
+        );
+        return ele;
+      })
+    );
 
     return success(res, {
       msg: "Blog listed successfully",

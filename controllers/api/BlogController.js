@@ -12,7 +12,7 @@ const {
   Tag,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
-const { TopicTypes } = require("../../constants/Constants");
+const { TopicTypes, BlogStatus } = require("../../constants/Constants");
 const sequelize = require("../../utils/Connection");
 
 const get = async (req, res) => {
@@ -21,6 +21,7 @@ const get = async (req, res) => {
     let blog = await Blog.findOne({
       where: {
         id,
+        status: BlogStatus.PUBLISHED,
       },
       include: [
         {
@@ -75,6 +76,7 @@ const get = async (req, res) => {
         id: {
           [Op.ne]: blog.id,
         },
+        status: BlogStatus.PUBLISHED,
       },
       attributes: [
         "id",
@@ -102,6 +104,7 @@ const get = async (req, res) => {
         id: {
           [Op.ne]: blog.id,
         },
+        status: BlogStatus.PUBLISHED,
       },
       attributes: [
         "id",
@@ -140,7 +143,9 @@ const index = async (req, res) => {
   try {
     let { categoryId, page = 1, limit = 10 } = req.query;
     console.log({ page, limit });
-    let query = {};
+    let query = {
+      status: BlogStatus.PUBLISHED,
+    };
     let pagination = getPageAndOffset(page, limit);
     if (categoryId) {
       query["categoryId"] = categoryId;

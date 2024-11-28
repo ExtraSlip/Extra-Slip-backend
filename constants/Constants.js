@@ -35,10 +35,8 @@ const Badges = {};
 const Stamps = {};
 
 const BlogStatus = {
-  PENDING: 0,
-  APPROVED: 1,
-  REJECTED: 2,
-  PUBLISHED: 3,
+  DRAFT: 0,
+  PUBLISHED: 1,
 };
 
 const CommentStatus = {
