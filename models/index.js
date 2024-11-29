@@ -20,4 +20,5 @@ module.exports = {
   BlogTopic: require("./BlogTopic"),
   BlogComment: require("./BlogComment"),
   BlogBookmark: require("./BlogBookmark"),
+  Setting: require("./Setting"),
 };

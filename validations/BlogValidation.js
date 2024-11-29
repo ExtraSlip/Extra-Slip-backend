@@ -28,6 +28,18 @@ const BlogValidation = async (req, res, next) => {
     subTitle: Joi.string().required().messages({
       "any.required": "Sub Title field is required",
     }),
+    shortTitle: Joi.string().required().messages({
+      "any.required": "Short Title field is required",
+    }),
+    metaTitle: Joi.string().required().messages({
+      "any.required": "Meta Title field is required",
+    }),
+    metaDescription: Joi.string().required().messages({
+      "any.required": "Meta Description field is required",
+    }),
+    featuredImageTitle: Joi.string().required().messages({
+      "any.required": "Featured Image Title field is required",
+    }),
     description: Joi.string().required().messages({
       "any.required": "Description field is required",
     }),

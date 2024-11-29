@@ -28,7 +28,23 @@ const Blog = db.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    shortTitle: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    metaTitle: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    metaDescription: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
     featuredImage: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    featuredImageTitle: {
       type: DataTypes.STRING,
       allowNull: false,
     },

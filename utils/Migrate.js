@@ -23,6 +23,7 @@ const {
   BlogBookmark,
   BlogComment,
   BlogTopic,
+  Setting,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 const { MenuSeeder } = require("../seeder");

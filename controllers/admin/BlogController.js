@@ -155,6 +155,7 @@ const index = async (req, res) => {
         ],
       });
     }
+
     blogs = await Promise.all(
       blogs.map(async (e) => {
         let ele = e.toJSON();
@@ -202,10 +203,18 @@ const index = async (req, res) => {
       },
       paranoid: false,
     });
+    response = [
+      {
+        blogs,
+        deletedCount,
+        mineCount,
+        totalCount,
+      },
+    ];
 
     return success(res, {
       msg: "Blog listed successfully",
-      data: blogs,
+      data: response,
     });
   } catch (err) {
     return error(res, {
