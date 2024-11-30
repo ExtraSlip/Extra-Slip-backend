@@ -307,6 +307,10 @@ const update = async (req, res) => {
         error: [],
       });
     }
+    let blog = await Blog.findOne({ where: { id: req.params.id } });
+    payload["customUrl"] = payload?.customUrl
+      ? payload?.customUrl
+      : customUrl(payload.title, blog.blogRandomId); // custom url
     const topics = JSON.parse(payload?.topics);
     await Blog.update(payload, { where: { id: req.params.id } });
     await BlogTopic.destroy({ where: { blogId: req.params.id } });
