@@ -20,7 +20,14 @@ const get = async (req, res) => {
     let id = req.params.id;
     let blog = await Blog.findOne({
       where: {
-        id,
+        [Op.or]: [
+          {
+            id,
+          },
+          {
+            blogRandomId: id,
+          },
+        ],
         status: BlogStatus.PUBLISHED,
       },
       include: [
@@ -37,6 +44,7 @@ const get = async (req, res) => {
         },
       ],
     });
+    id = blog.id;
     const bookmarked = await BlogBookmark.findOne({
       where: {
         blogId: id,
