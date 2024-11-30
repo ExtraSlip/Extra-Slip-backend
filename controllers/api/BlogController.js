@@ -92,6 +92,8 @@ const get = async (req, res) => {
         "subTitle",
         "featuredImage",
         "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
         [
           sequelize.literal(
             "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
@@ -120,6 +122,8 @@ const get = async (req, res) => {
         "subTitle",
         "featuredImage",
         "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
         [
           sequelize.literal(
             "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
@@ -202,7 +206,13 @@ const relatedBlogs = async (req, res) => {
     }
     let blogs = await Blog.findAll({
       where: query,
-      attributes: ["title", "featuredImage", "id"],
+      attributes: [
+        "title",
+        "featuredImage",
+        "id",
+        "customUrl",
+        "categoryBasedUrl",
+      ],
       order: [["id", "desc"]],
       limit: 5,
     });
