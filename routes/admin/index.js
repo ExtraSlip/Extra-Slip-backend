@@ -13,5 +13,6 @@ router.use("/categories", require("./Category"));
 router.use("/users", require("./User"));
 router.use("/menulist", require("./MenuList"));
 router.use("/blogs", require("./Blog"));
+router.use("/settings", require("./Setting"));
 
 module.exports = router;

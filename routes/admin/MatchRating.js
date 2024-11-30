@@ -9,27 +9,27 @@ const router = express.Router();
 
 router.get(
   "/",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   MatchRatingController.index
 );
 router.post(
   "/",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   MatchRatingValidation,
   MatchRatingController.add
 );
 router.put(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   MatchRatingValidation,
   MatchRatingController.update
 );
 router.delete(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   MatchRatingController.deleteMatchRating
 );
 

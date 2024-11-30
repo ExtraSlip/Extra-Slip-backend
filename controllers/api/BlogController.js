@@ -158,7 +158,13 @@ const index = async (req, res) => {
           attributes: ["id", "name"],
         },
       ],
-      attributes: ["title", "featuredImage", "id"],
+      attributes: [
+        "title",
+        "featuredImage",
+        "id",
+        "customUrl",
+        "categoryBasedUrl",
+      ],
       limit: pagination.limit,
       offset: pagination.offset,
     });

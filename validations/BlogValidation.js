@@ -43,6 +43,7 @@ const BlogValidation = async (req, res, next) => {
     description: Joi.string().required().messages({
       "any.required": "Description field is required",
     }),
+    customUrl: Joi.string().optional().allow(null, "").messages({}),
     featuredImage: Joi.string().optional().allow(null, "").messages({}),
     topics: Joi.string().optional().allow("[]"),
   });

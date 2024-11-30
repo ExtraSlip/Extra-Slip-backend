@@ -40,6 +40,19 @@ const Blog = db.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    customUrl: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    categoryBasedUrl: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    blogRandomId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
     featuredImage: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -5,21 +5,21 @@ const { QuestionValidation } = require("../../validations/QuestionValidation");
 const { upload } = require("../../helpers");
 const router = express.Router();
 
-router.get("/:quizId", verifyAdminToken, QuestionController.index);
+router.get("/:quizId", verifyAdminToken([]), QuestionController.index);
 router.post(
   "/",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   QuestionValidation,
   QuestionController.add
 );
 router.put(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   QuestionValidation,
   QuestionController.update
 );
-router.delete("/:id", verifyAdminToken, QuestionController.deleteQuestion);
+router.delete("/:id", verifyAdminToken([]), QuestionController.deleteQuestion);
 
 module.exports = router;

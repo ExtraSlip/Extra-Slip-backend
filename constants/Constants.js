@@ -30,6 +30,17 @@ const SocialType = {
   YOUTUBE: "youtube",
 };
 
+const Settings = {
+  SITEICON: "siteIcon",
+  ADMINCONTACTEMAIL: "adminContactEmail",
+  POSTURL: "postUrl",
+};
+
+const POSTURL = {
+  CUSTOM: "custom",
+  CATEGORYBASED: "categoryBased",
+};
+
 const Badges = {};
 
 const Stamps = {};
@@ -67,4 +78,6 @@ module.exports = {
   CommentStatus,
   TopicTypes,
   BlogFilterType,
+  POSTURL,
+  Settings,
 };

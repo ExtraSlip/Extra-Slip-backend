@@ -11,6 +11,7 @@ const {
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
 const { TopicTypes, BlogFilterType } = require("../../constants/Constants");
+const { getRandomNumber } = require("../../utils/Common");
 
 const topicsList = async (req, res) => {
   try {
@@ -231,6 +232,42 @@ const add = async (req, res) => {
     if (req.file) {
       payload["featuredImage"] = req.file?.path;
     }
+    let category = await Category.findOne({
+      where: {
+        id: payload.categoryId,
+      },
+    });
+    if (!category) {
+      return error(res, {
+        msg: "Category not exists",
+        error: [],
+      });
+    }
+    if (payload.customUrl) {
+      let customUrlExists = await Blog.findOne({
+        where: {
+          customUrl: payload.customUrl,
+          id: {
+            [Op.ne]: req.params.id,
+          },
+        },
+      });
+      if (customUrlExists) {
+        return error(res, {
+          msg: "Custom url already exists",
+          error: [],
+        });
+      }
+    }
+    payload["blogRandomId"] = getRandomNumber(12);
+    payload["customUrl"] = payload?.customUrl
+      ? payload?.customUrl
+      : customUrl(payload.title, payload["blogRandomId"]); // custom url
+    payload["categoryBasedUrl"] = categoryBasedUrl(
+      payload.title,
+      category.name,
+      payload["blogRandomId"]
+    ); // category based url
     const topics = JSON.parse(payload?.topics);
     payload["createdBy"] = req.user.id;
     let blog = await Blog.create(payload);
@@ -255,6 +292,20 @@ const update = async (req, res) => {
     let payload = req.body;
     if (req.file) {
       payload["featuredImage"] = req.file?.path;
+    }
+    let customUrlExists = await Blog.findOne({
+      where: {
+        customUrl: payload.customUrl,
+        id: {
+          [Op.ne]: req.params.id,
+        },
+      },
+    });
+    if (customUrlExists) {
+      return error(res, {
+        msg: "Custom url already exists",
+        error: [],
+      });
     }
     const topics = JSON.parse(payload?.topics);
     await Blog.update(payload, { where: { id: req.params.id } });
@@ -291,6 +342,26 @@ const deleteBlog = async (req, res) => {
       error: [err?.message],
     });
   }
+};
+
+const customUrl = (title, randomNo) => {
+  title = title
+    .replace(/[^\w\s]/gi, "-")
+    .replace(" ", "-")
+    .toLowerCase();
+  return `/articles/${randomNo}-${title}`;
+};
+
+const categoryBasedUrl = (title, categoryName, randomNo) => {
+  title = title
+    .replace(/[^\w\s]/gi, "-")
+    .replace(" ", "-")
+    .toLowerCase();
+  categoryName = categoryName
+    .replace(/[^\w\s]/gi, "-")
+    .replace(" ", "-")
+    .toLowerCase();
+  return `/articles/${categoryName}/${randomNo}-${title}`;
 };
 
 module.exports = {
