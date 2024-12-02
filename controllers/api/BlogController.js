@@ -40,7 +40,7 @@ const get = async (req, res) => {
         },
         {
           model: Admin,
-          attributes: ["name", "image"],
+          attributes: ["id", "name", "image"],
         },
       ],
     });

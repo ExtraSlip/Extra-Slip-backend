@@ -9,7 +9,7 @@ const get = async (req, res) => {
       where: {
         id,
       },
-      attributes: ["name", "email", "image", "username", "type"],
+      attributes: ["id", "name", "email", "image", "username", "type"],
       include: [
         {
           model: AdminDetail,
