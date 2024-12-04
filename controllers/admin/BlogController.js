@@ -293,19 +293,21 @@ const update = async (req, res) => {
     if (req.file) {
       payload["featuredImage"] = req.file?.path;
     }
-    let customUrlExists = await Blog.findOne({
-      where: {
-        customUrl: payload.customUrl,
-        id: {
-          [Op.ne]: req.params.id,
+    if (payload.customUrl) {
+      let customUrlExists = await Blog.findOne({
+        where: {
+          customUrl: payload.customUrl,
+          id: {
+            [Op.ne]: req.params.id,
+          },
         },
-      },
-    });
-    if (customUrlExists) {
-      return error(res, {
-        msg: "Custom url already exists",
-        error: [],
       });
+      if (customUrlExists) {
+        return error(res, {
+          msg: "Custom url already exists",
+          error: [],
+        });
+      }
     }
     let blog = await Blog.findOne({ where: { id: req.params.id } });
     payload["customUrl"] = payload?.customUrl
