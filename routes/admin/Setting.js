@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/", verifyAdminToken([]), SettingController.index);
 router.post(
   "/",
-  verifyAdminToken([RoleType.SUPERADMIN]),
+  verifyAdminToken([RoleType.ADMIN]),
   upload.fields([{ name: "siteIcon", maxCount: 1 }]),
   SettingValidation,
   SettingController.addUpdate

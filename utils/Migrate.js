@@ -36,7 +36,7 @@ sequelize
       name: "Admin",
       email: "admin@gmail.com",
       username: "admin",
-      type: RoleType.SUPERADMIN,
+      type: RoleType.ADMIN,
       registerStep: RegisterStep.COMPLETED,
       password: hash,
     };

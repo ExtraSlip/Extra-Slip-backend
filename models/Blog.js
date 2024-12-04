@@ -49,7 +49,7 @@ const Blog = db.define(
       allowNull: true,
     },
     blogRandomId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: true,
       defaultValue: 0,
     },

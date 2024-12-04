@@ -8,13 +8,13 @@ const router = express.Router();
 
 router.post(
   "/",
-  verifyAdminToken([RoleType.SUPERADMIN]),
+  verifyAdminToken([RoleType.ADMIN]),
   MenuValidation,
   MenuController.add
 );
 router.put(
   "/:id",
-  verifyAdminToken([RoleType.SUPERADMIN]),
+  verifyAdminToken([RoleType.ADMIN]),
   MenuValidation,
   MenuController.update
 );

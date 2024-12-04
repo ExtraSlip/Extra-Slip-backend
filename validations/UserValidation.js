@@ -15,8 +15,7 @@ const UserValidation = async (req, res, next) => {
         RoleType.AFFILIATE,
         RoleType.EDITOR,
         RoleType.FREELANCER,
-        RoleType.SEO,
-        RoleType.SUPERADMIN
+        RoleType.SEO
       )
       .messages({
         "any.required": "Type field is required",
@@ -56,8 +55,7 @@ const UpdateUserValidation = async (req, res, next) => {
         RoleType.AFFILIATE,
         RoleType.EDITOR,
         RoleType.FREELANCER,
-        RoleType.SEO,
-        RoleType.SUPERADMIN
+        RoleType.SEO
       )
       .messages({
         "any.required": "Type field is required",

@@ -1,6 +1,5 @@
 const RoleType = {
   ADMIN: "admin",
-  SUPERADMIN: "superadmin",
   EDITOR: "editor",
   AUTHOR: "author",
   FREELANCER: "freelancer",
