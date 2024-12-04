@@ -352,20 +352,20 @@ const deleteBlog = async (req, res) => {
 
 const customUrl = (title, randomNo) => {
   title = title
-    .replace(/[^\w\s]/gi, "-")
-    .replace(" ", "-")
+    .replaceAll(/[^\w\s]/gi, "-")
+    .replaceAll(" ", "-")
     .toLowerCase();
   return `/articles/${randomNo}-${title}`;
 };
 
 const categoryBasedUrl = (title, categoryName, randomNo) => {
   title = title
-    .replace(/[^\w\s]/gi, "-")
-    .replace(" ", "-")
+    .replaceAll(/[^\w\s]/gi, "-")
+    .replaceAll(" ", "-")
     .toLowerCase();
   categoryName = categoryName
-    .replace(/[^\w\s]/gi, "-")
-    .replace(" ", "-")
+    .replaceAll(/[^\w\s]/gi, "-")
+    .replaceAll(" ", "-")
     .toLowerCase();
   return `/articles/${categoryName}/${randomNo}-${title}`;
 };
