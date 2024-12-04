@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const { Validate } = require("./Validate");
-const { TopicTypes } = require("../constants/Constants");
+const { TopicTypes, BlogStatus } = require("../constants/Constants");
 
 const topicObject = Joi.object().keys({
   type: Joi.string()
@@ -43,6 +43,13 @@ const BlogValidation = async (req, res, next) => {
     description: Joi.string().required().messages({
       "any.required": "Description field is required",
     }),
+    status: Joi.number()
+      .integer()
+      .optional()
+      .valid(BlogStatus.PUBLISHED, BlogStatus.DRAFT)
+      .messages({
+        "any.required": "Type field is required",
+      }),
     customUrl: Joi.string().optional().allow(null, "").messages({}),
     featuredImage: Joi.string().optional().allow(null, "").messages({}),
     topics: Joi.string().optional().allow("[]"),
