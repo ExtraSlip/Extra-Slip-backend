@@ -24,6 +24,7 @@ router.post(
   BookmarkValidation,
   BlogController.toggleBookmark
 );
+router.get("/getBlogByUrl", BlogController.getBlogByUrl);
 router.get("/:id", BlogController.get);
 
 module.exports = router;

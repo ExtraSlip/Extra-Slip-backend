@@ -12,6 +12,7 @@ const {
 const sequelize = require("../../utils/Connection");
 const { TopicTypes, BlogFilterType } = require("../../constants/Constants");
 const { getRandomNumber } = require("../../utils/Common");
+const { encrypt, decrypt } = require("../../utils/EncryptDecrypt");
 
 const topicsList = async (req, res) => {
   try {
@@ -250,6 +251,7 @@ const add = async (req, res) => {
       });
     }
     if (payload.customUrl) {
+      payload["customUrl"] = encrypt(payload["customUrl"]);
       let customUrlExists = await Blog.findOne({
         where: {
           customUrl: payload.customUrl,
@@ -268,12 +270,13 @@ const add = async (req, res) => {
     payload["blogRandomId"] = getRandomNumber(12);
     payload["customUrl"] = payload?.customUrl
       ? payload?.customUrl
-      : customUrl(payload.title, payload["blogRandomId"]); // custom url
+      : encrypt(customUrl(payload.title, payload["blogRandomId"])); // custom url
     payload["categoryBasedUrl"] = categoryBasedUrl(
       payload.title,
       category.name,
       payload["blogRandomId"]
     ); // category based url
+    payload["categoryBasedUrl"] = encrypt(payload["categoryBasedUrl"]);
     const topics = JSON.parse(payload?.topics);
     payload["createdBy"] = req.user.id;
     let blog = await Blog.create(payload);
@@ -300,6 +303,7 @@ const update = async (req, res) => {
       payload["featuredImage"] = req.file?.path;
     }
     if (payload.customUrl) {
+      payload["customUrl"] = encrypt(payload["customUrl"]);
       let customUrlExists = await Blog.findOne({
         where: {
           customUrl: payload.customUrl,
@@ -318,7 +322,7 @@ const update = async (req, res) => {
     let blog = await Blog.findOne({ where: { id: req.params.id } });
     payload["customUrl"] = payload?.customUrl
       ? payload?.customUrl
-      : customUrl(payload.title, blog.blogRandomId); // custom url
+      : encrypt(customUrl(payload.title, blog.blogRandomId)); // custom url
     const topics = JSON.parse(payload?.topics);
     await Blog.update(payload, { where: { id: req.params.id } });
     await BlogTopic.destroy({ where: { blogId: req.params.id } });

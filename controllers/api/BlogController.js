@@ -151,6 +151,149 @@ const get = async (req, res) => {
   }
 };
 
+const getBlogByUrl = async (req, res) => {
+  try {
+    let url = req.query.url;
+    if (!url) {
+      return error(res, {
+        msg: "Blog url not found!!",
+        error: ["Blog url not found!!"],
+      });
+    }
+    let blog = await Blog.findOne({
+      where: {
+        [Op.or]: [
+          {
+            customUrl: url,
+          },
+          {
+            categoryBasedUrl: url,
+          },
+        ],
+        status: BlogStatus.PUBLISHED,
+      },
+      include: [
+        {
+          model: BlogTopic,
+        },
+        {
+          model: BlogComment,
+          attributes: [],
+        },
+        {
+          model: Admin,
+          attributes: ["id", "name", "image"],
+        },
+      ],
+    });
+    console.log({ blog });
+    id = blog.id;
+    const bookmarked = await BlogBookmark.findOne({
+      where: {
+        blogId: id,
+        userId: req?.userId ?? 0,
+      },
+    });
+    blog = blog.toJSON();
+    blog.blogTopics = await Promise.all(
+      blog?.blogTopics?.map(async (x) => {
+        switch (x.type) {
+          case TopicTypes.PLAYER:
+            x["topic"] = await Player.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name"],
+            });
+            break;
+          case TopicTypes.TAG:
+            x["topic"] = await Tag.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name"],
+            });
+            break;
+
+          default:
+            x["topic"] = {
+              id: 0,
+              name: x.name,
+            };
+            break;
+        }
+        return x;
+      })
+    );
+    blog.isBookmarked = bookmarked ? true : false;
+    blog.extraSlipRecommended = await Blog.findAll({
+      where: {
+        id: {
+          [Op.ne]: blog.id,
+        },
+        status: BlogStatus.PUBLISHED,
+      },
+      attributes: [
+        "id",
+        "title",
+        "subTitle",
+        "featuredImage",
+        "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+          ),
+          "comments",
+        ],
+      ],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+      ],
+      limit: 5,
+    });
+    blog.recommended = await Blog.findAll({
+      where: {
+        id: {
+          [Op.ne]: blog.id,
+        },
+        status: BlogStatus.PUBLISHED,
+      },
+      attributes: [
+        "id",
+        "title",
+        "subTitle",
+        "featuredImage",
+        "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+          ),
+          "comments",
+        ],
+      ],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+      ],
+      limit: 5,
+    });
+    return success(res, {
+      msg: "Blog listed successfully!!",
+      data: [blog],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
+
 const index = async (req, res) => {
   try {
     let { categoryId, page = 1, limit = 10 } = req.query;
@@ -337,4 +480,5 @@ module.exports = {
   getComments,
   addLike,
   toggleBookmark,
+  getBlogByUrl,
 };

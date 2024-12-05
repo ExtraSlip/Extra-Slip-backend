@@ -73,7 +73,7 @@ const verifyAdminToken = (roles, req, res, next) => {
         attributes: { exclude: ["updatedAt", "password"] },
         raw: true,
       });
-      console.log(admin);
+
       if (!admin) {
         return error(res, {
           status: false,
