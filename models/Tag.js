@@ -11,24 +11,12 @@ const Tag = db.define("tags", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  tagType: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   about: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
   image: {
     type: DataTypes.STRING,
-    allowNull: true,
-  },
-  inFocus: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  webStories: {
-    type: DataTypes.TEXT,
     allowNull: true,
   },
 });
