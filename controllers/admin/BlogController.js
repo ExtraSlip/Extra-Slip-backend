@@ -155,6 +155,29 @@ const index = async (req, res) => {
           },
         ],
       });
+      let totalCount = await Blog.count({ paranoid: false });
+      let deletedCount = await Blog.count({
+        where: {
+          deletedAt: {
+            [Op.ne]: null,
+          },
+        },
+        paranoid: false,
+      });
+      let mineCount = await Blog.count({
+        where: {
+          createdBy: req.user.id,
+        },
+        paranoid: false,
+      });
+      response = [
+        {
+          blogs,
+          deletedCount,
+          mineCount,
+          totalCount,
+        },
+      ];
     }
 
     blogs = await Promise.all(
@@ -189,29 +212,12 @@ const index = async (req, res) => {
         return ele;
       })
     );
-    let totalCount = await Blog.count({ paranoid: false });
-    let deletedCount = await Blog.count({
-      where: {
-        deletedAt: {
-          [Op.ne]: null,
-        },
-      },
-      paranoid: false,
-    });
-    let mineCount = await Blog.count({
-      where: {
-        createdBy: req.user.id,
-      },
-      paranoid: false,
-    });
-    response = [
-      {
-        blogs,
-        deletedCount,
-        mineCount,
-        totalCount,
-      },
-    ];
+
+    if (req.query?.id) {
+      response = blogs;
+    } else {
+      response[0].blogs = blogs;
+    }
 
     return success(res, {
       msg: "Blog listed successfully",

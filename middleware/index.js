@@ -73,6 +73,14 @@ const verifyAdminToken = (roles, req, res, next) => {
         attributes: { exclude: ["updatedAt", "password"] },
         raw: true,
       });
+      console.log(admin);
+      if (!admin) {
+        return error(res, {
+          status: false,
+          msg: "Invalid Token",
+          statuscode: 401,
+        });
+      }
 
       if (admin?.isBlocked) {
         return error(res, {
