@@ -48,6 +48,14 @@ const Blog = db.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    categoryBasedUrlHash: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    customUrlHash: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     blogRandomId: {
       type: DataTypes.STRING,
       allowNull: true,

@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const { error, success } = require("../../handlers");
 const {
   Blog,
@@ -18,6 +18,7 @@ const sequelize = require("../../utils/Connection");
 const get = async (req, res) => {
   try {
     let id = req.params.id;
+    console.log(id);
     let blog = await Blog.findOne({
       where: {
         [Op.or]: [
@@ -40,10 +41,25 @@ const get = async (req, res) => {
         },
         {
           model: Admin,
-          attributes: ["id", "name", "image"],
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
     });
+    if (blog == null) {
+      return error(res, {
+        msg: "Blog not found!!",
+        error: ["Blog not found!!"],
+      });
+    }
+    blog = blog.toJSON();
     id = blog.id;
     const bookmarked = await BlogBookmark.findOne({
       where: {
@@ -51,7 +67,6 @@ const get = async (req, res) => {
         userId: req?.userId ?? 0,
       },
     });
-    blog = blog.toJSON();
     blog.blogTopics = await Promise.all(
       blog?.blogTopics?.map(async (x) => {
         switch (x.type) {
@@ -106,6 +121,18 @@ const get = async (req, res) => {
           model: Category,
           attributes: ["id", "name"],
         },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
       ],
       limit: 5,
     });
@@ -135,6 +162,18 @@ const get = async (req, res) => {
         {
           model: Category,
           attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
       limit: 5,
@@ -164,10 +203,10 @@ const getBlogByUrl = async (req, res) => {
       where: {
         [Op.or]: [
           {
-            customUrl: url,
+            customUrlHash: url,
           },
           {
-            categoryBasedUrl: url,
+            categoryBasedUrlHash: url,
           },
         ],
         status: BlogStatus.PUBLISHED,
@@ -182,11 +221,24 @@ const getBlogByUrl = async (req, res) => {
         },
         {
           model: Admin,
-          attributes: ["id", "name", "image"],
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
     });
-    console.log({ blog });
+    if (!blog) {
+      return error(res, {
+        msg: "Blog not found!!",
+        error: ["Blog not found!!"],
+      });
+    }
     id = blog.id;
     const bookmarked = await BlogBookmark.findOne({
       where: {
@@ -249,6 +301,18 @@ const getBlogByUrl = async (req, res) => {
           model: Category,
           attributes: ["id", "name"],
         },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
       ],
       limit: 5,
     });
@@ -278,6 +342,18 @@ const getBlogByUrl = async (req, res) => {
         {
           model: Category,
           attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
       limit: 5,
@@ -311,6 +387,18 @@ const index = async (req, res) => {
         {
           model: Category,
           attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
       attributes: [
@@ -355,6 +443,20 @@ const relatedBlogs = async (req, res) => {
         "id",
         "customUrl",
         "categoryBasedUrl",
+      ],
+      include: [
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
       ],
       order: [["id", "desc"]],
       limit: 5,
