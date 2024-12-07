@@ -185,36 +185,33 @@ const index = async (req, res) => {
       blogs.map(async (e) => {
         let ele = e.toJSON();
         ele.blogTopics = await Promise.all(
-          ele?.blogTopics?.map(async (x) => {
-            switch (x.type) {
-              case TopicTypes.PLAYER:
-                x["topic"] = await Player.findOne({
-                  where: { id: x.topicId },
-                  attributes: ["id", "name"],
-                });
-                break;
-              case TopicTypes.TAG:
-                x["topic"] = await Tag.findOne({
-                  where: { id: x.topicId },
-                  attributes: ["id", "name"],
-                });
-                break;
+          ele?.blogTopics
+            ?.map(async (x) => {
+              switch (x.type) {
+                case TopicTypes.PLAYER:
+                  x["topic"] = await Player.findOne({
+                    where: { id: x.topicId },
+                    attributes: ["id", "name"],
+                  });
+                  break;
+                case TopicTypes.TAG:
+                  x["topic"] = await Tag.findOne({
+                    where: { id: x.topicId },
+                    attributes: ["id", "name"],
+                  });
+                  break;
 
-              default:
-                x["topic"] = {
-                  id: 0,
-                  name: x.name,
-                };
-                break;
-            }
-            return x;
-          })
+                default:
+                  x["topic"] = {
+                    id: 0,
+                    name: x.name,
+                  };
+                  break;
+              }
+              return x;
+            })
+            .filter((e) => e?.topic?.name != null && e?.topic?.name != "")
         );
-        console.log("=-=-=-=before=-=", JSON.stringify(ele.blogTopics));
-        ele.blogTopics = ele.blogTopics?.filter(
-          (e) => e.name != null && e.name != ""
-        );
-        console.log("=-=-=-=after=-=", JSON.stringify(ele.blogTopics));
         return ele;
       })
     );
