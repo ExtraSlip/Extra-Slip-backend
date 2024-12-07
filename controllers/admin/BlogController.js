@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const { error, success } = require("../../handlers");
 const {
   Blog,
@@ -69,6 +69,16 @@ const index = async (req, res) => {
     if (req.query?.id) {
       query["id"] = req.query.id;
     }
+    console.log(
+      hashString(
+        "/articles/test/740850082432-decoding-india-s-winning-formula-in-border-gavaskar-trophy-over-the-years"
+      )
+    );
+    console.log(
+      hashString(
+        "/articles/740850082432-decoding-india-s-winning-formula-in-border-gavaskar-trophy-over-the-years"
+      )
+    );
 
     let { type = BlogFilterType.Total } = req.query;
     console.log({ type });
@@ -108,7 +118,15 @@ const index = async (req, res) => {
           },
           {
             model: Admin,
-            attributes: ["id", "name", "image"],
+            attributes: [
+              "id",
+              "name",
+              "image",
+              [
+                literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+                "urlSetting",
+              ],
+            ],
           },
         ],
       });
@@ -128,6 +146,8 @@ const index = async (req, res) => {
           "createdAt",
           "likes",
           "status",
+          "customUrl",
+          "categoryBasedUrl",
           [
             sequelize.literal(
               "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
@@ -152,7 +172,15 @@ const index = async (req, res) => {
           },
           {
             model: Admin,
-            attributes: ["id", "name", "image"],
+            attributes: [
+              "id",
+              "name",
+              "image",
+              [
+                literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+                "urlSetting",
+              ],
+            ],
           },
         ],
       });
@@ -412,7 +440,7 @@ const deleteBlog = async (req, res) => {
 const customUrl = (title, randomNo) => {
   title = title
     .replaceAll(/[^\w\s]/gi, "-")
-    .replaceAll(" ", "-")
+    .replaceAll(/\s+/g, "-")
     .toLowerCase();
   return `/articles/${randomNo}-${title}`;
 };
@@ -420,11 +448,11 @@ const customUrl = (title, randomNo) => {
 const categoryBasedUrl = (title, categoryName, randomNo) => {
   title = title
     .replaceAll(/[^\w\s]/gi, "-")
-    .replaceAll(" ", "-")
+    .replaceAll(/\s+/g, "-")
     .toLowerCase();
   categoryName = categoryName
     .replaceAll(/[^\w\s]/gi, "-")
-    .replaceAll(" ", "-")
+    .replaceAll(/\s+/g, "-")
     .toLowerCase();
   return `/articles/${categoryName}/${randomNo}-${title}`;
 };
