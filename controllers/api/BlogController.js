@@ -93,7 +93,7 @@ const get = async (req, res) => {
         return x;
       })
     );
-    ele.blogTopics = ele.blogTopics?.filter(
+    blog.blogTopics = blog.blogTopics?.filter(
       (e) => e?.topic?.name != null && e?.topic?.name != ""
     );
     blog.isBookmarked = bookmarked ? true : false;
@@ -276,7 +276,7 @@ const getBlogByUrl = async (req, res) => {
         return x;
       })
     );
-    ele.blogTopics = ele.blogTopics?.filter(
+    blog.blogTopics = blog.blogTopics?.filter(
       (e) => e?.topic?.name != null && e?.topic?.name != ""
     );
     blog.isBookmarked = bookmarked ? true : false;
