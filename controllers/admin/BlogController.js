@@ -210,9 +210,11 @@ const index = async (req, res) => {
             return x;
           })
         );
+        console.log("=-=-=-=before=-=", JSON.stringify(ele.blogTopics));
         ele.blogTopics = ele.blogTopics?.filter(
           (e) => e.name != null && e.name != ""
         );
+        console.log("=-=-=-=after=-=", JSON.stringify(ele.blogTopics));
         return ele;
       })
     );
