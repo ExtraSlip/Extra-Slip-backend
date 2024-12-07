@@ -5,6 +5,7 @@ const { BlogValidation } = require("../../validations/BlogValidation");
 const { BlogController } = require("../../controllers/admin");
 const router = express.Router();
 
+router.get("/updateHash", verifyAdminToken([]), BlogController.updateHash);
 router.get("/", verifyAdminToken([]), BlogController.index);
 router.get("/topicsList", verifyAdminToken([]), BlogController.topicsList);
 router.post(

@@ -235,6 +235,48 @@ const index = async (req, res) => {
   }
 };
 
+const updateHash = async (req, res) => {
+  try {
+    let blogs = await Blog.findAll({
+      where: {
+        [Op.or]: [
+          {
+            customUrlHash: null,
+          },
+          {
+            categoryBasedUrlHash: null,
+          },
+        ],
+      },
+    });
+    console.log(blogs.length);
+    for (let index = 0; index < blogs.length; index++) {
+      const blog = blogs[index];
+      if (
+        (blog.customUrlHash == null || blog.customUrlHash == "") &&
+        blog.customUrl != null
+      ) {
+        blog["customUrlHash"] = hashString(blog.customUrl);
+      }
+
+      if (
+        (blog.categoryBasedUrlHash == null ||
+          blog.categoryBasedUrlHash == "") &&
+        blog.categoryBasedUrl != null
+      ) {
+        blog["categoryBasedUrlHash"] = hashString(blog.categoryBasedUrl);
+      }
+      await blog.save();
+    }
+    return success(res, {
+      msg: "Hash updated successfully",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+  return;
+};
+
 const add = async (req, res) => {
   try {
     let payload = req.body;
@@ -393,4 +435,5 @@ module.exports = {
   deleteBlog,
   index,
   topicsList,
+  updateHash,
 };
