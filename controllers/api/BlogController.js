@@ -106,7 +106,7 @@ const get = async (req, res) => {
       },
       attributes: [
         "id",
-        "title",
+        ["shortTitle", "title"],
         "subTitle",
         "featuredImage",
         "createdAt",
@@ -148,7 +148,7 @@ const get = async (req, res) => {
       },
       attributes: [
         "id",
-        "title",
+        ["shortTitle", "title"],
         "subTitle",
         "featuredImage",
         "createdAt",
@@ -289,7 +289,7 @@ const getBlogByUrl = async (req, res) => {
       },
       attributes: [
         "id",
-        "title",
+        ["shortTitle", "title"],
         "subTitle",
         "featuredImage",
         "createdAt",
@@ -331,7 +331,7 @@ const getBlogByUrl = async (req, res) => {
       },
       attributes: [
         "id",
-        "title",
+        ["shortTitle", "title"],
         "subTitle",
         "featuredImage",
         "createdAt",
@@ -408,7 +408,7 @@ const index = async (req, res) => {
         },
       ],
       attributes: [
-        "title",
+        ["shortTitle", "title"],
         "featuredImage",
         "id",
         "customUrl",
@@ -444,7 +444,7 @@ const relatedBlogs = async (req, res) => {
     let blogs = await Blog.findAll({
       where: query,
       attributes: [
-        "title",
+        ["shortTitle", "title"],
         "featuredImage",
         "id",
         "customUrl",

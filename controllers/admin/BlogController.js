@@ -69,16 +69,6 @@ const index = async (req, res) => {
     if (req.query?.id) {
       query["id"] = req.query.id;
     }
-    console.log(
-      hashString(
-        "/articles/test/740850082432-decoding-india-s-winning-formula-in-border-gavaskar-trophy-over-the-years"
-      )
-    );
-    console.log(
-      hashString(
-        "/articles/740850082432-decoding-india-s-winning-formula-in-border-gavaskar-trophy-over-the-years"
-      )
-    );
 
     let { type = BlogFilterType.Total } = req.query;
     console.log({ type });
@@ -141,7 +131,7 @@ const index = async (req, res) => {
         where: query,
         attributes: [
           "id",
-          "title",
+          ["shortTitle", "title"],
           "featuredImage",
           "createdAt",
           "likes",
