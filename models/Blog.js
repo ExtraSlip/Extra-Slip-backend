@@ -24,6 +24,10 @@ const Blog = db.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    keywords: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
     subTitle: {
       type: DataTypes.TEXT,
       allowNull: false,
