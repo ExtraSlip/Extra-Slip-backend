@@ -89,6 +89,9 @@ const index = async (req, res) => {
         break;
       case BlogFilterType.Mine:
         query["createdBy"] = req.user.id;
+        query["deletedAt"] = {
+          [Op.eq]: null,
+        };
         break;
       case BlogFilterType.Deleted:
         query["deletedAt"] = {
@@ -185,7 +188,7 @@ const index = async (req, res) => {
           },
         ],
       });
-      let totalCount = await Blog.count({ paranoid: false });
+      let totalCount = await Blog.count({});
       let deletedCount = await Blog.count({
         where: {
           deletedAt: {
@@ -197,6 +200,9 @@ const index = async (req, res) => {
       let mineCount = await Blog.count({
         where: {
           createdBy: req.user.id,
+          deletedAt: {
+            [Op.eq]: null,
+          },
         },
         paranoid: false,
       });
