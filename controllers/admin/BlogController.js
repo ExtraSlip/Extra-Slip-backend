@@ -10,7 +10,11 @@ const {
   Admin,
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
-const { TopicTypes, BlogFilterType } = require("../../constants/Constants");
+const {
+  TopicTypes,
+  BlogFilterType,
+  RoleType,
+} = require("../../constants/Constants");
 const { getRandomNumber } = require("../../utils/Common");
 const { encrypt, decrypt, hashString } = require("../../utils/Bcrypt");
 
@@ -73,9 +77,15 @@ const index = async (req, res) => {
     let { type = BlogFilterType.Total } = req.query;
     console.log({ type });
     type = parseInt(type);
+    if (req.user.type != RoleType.ADMIN) {
+      query["createdBy"] = req.user.id;
+    }
     switch (type) {
       case BlogFilterType.Total:
         // need to add condition if required
+        query["deletedAt"] = {
+          [Op.eq]: null,
+        };
         break;
       case BlogFilterType.Mine:
         query["createdBy"] = req.user.id;
@@ -146,6 +156,7 @@ const index = async (req, res) => {
           ],
         ],
         paranoid: false,
+        order: [["id", "desc"]],
         include: [
           {
             model: BlogComment,

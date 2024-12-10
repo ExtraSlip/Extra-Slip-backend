@@ -104,6 +104,7 @@ const get = async (req, res) => {
         },
         status: BlogStatus.PUBLISHED,
       },
+      order: [["id", "desc"]],
       attributes: [
         "id",
         ["shortTitle", "title"],
@@ -146,6 +147,7 @@ const get = async (req, res) => {
         },
         status: BlogStatus.PUBLISHED,
       },
+      order: [["id", "desc"]],
       attributes: [
         "id",
         ["shortTitle", "title"],
@@ -287,6 +289,7 @@ const getBlogByUrl = async (req, res) => {
         },
         status: BlogStatus.PUBLISHED,
       },
+      order: [["id", "desc"]],
       attributes: [
         "id",
         ["shortTitle", "title"],
@@ -329,6 +332,7 @@ const getBlogByUrl = async (req, res) => {
         },
         status: BlogStatus.PUBLISHED,
       },
+      order: [["id", "desc"]],
       attributes: [
         "id",
         ["shortTitle", "title"],
@@ -389,6 +393,7 @@ const index = async (req, res) => {
     }
     let blogs = await Blog.findAll({
       where: query,
+      order: [["id", "desc"]],
       include: [
         {
           model: Category,
@@ -443,6 +448,7 @@ const relatedBlogs = async (req, res) => {
     }
     let blogs = await Blog.findAll({
       where: query,
+      order: [["id", "desc"]],
       attributes: [
         ["shortTitle", "title"],
         "featuredImage",
