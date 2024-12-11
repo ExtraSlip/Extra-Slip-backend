@@ -73,13 +73,13 @@ const get = async (req, res) => {
           case TopicTypes.PLAYER:
             x["topic"] = await Player.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name"],
+              attributes: ["id", "name", "image"],
             });
             break;
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name"],
+              attributes: ["id", "name", "image"],
             });
             break;
 
@@ -87,6 +87,7 @@ const get = async (req, res) => {
             x["topic"] = {
               id: 0,
               name: x.name,
+              image: "",
             };
             break;
         }
@@ -258,13 +259,13 @@ const getBlogByUrl = async (req, res) => {
           case TopicTypes.PLAYER:
             x["topic"] = await Player.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name"],
+              attributes: ["id", "name", "image"],
             });
             break;
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name"],
+              attributes: ["id", "name", "image"],
             });
             break;
 
@@ -272,6 +273,7 @@ const getBlogByUrl = async (req, res) => {
             x["topic"] = {
               id: 0,
               name: x.name,
+              image: "",
             };
             break;
         }
