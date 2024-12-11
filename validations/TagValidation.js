@@ -11,6 +11,14 @@ const TagValidation = async (req, res, next) => {
       "any.required": "About field is required",
     }),
     image: Joi.string().optional().allow(null, ""),
+    facebookLink: Joi.string().optional().allow(null, ""),
+    twitterLink: Joi.string().optional().allow(null, ""),
+    linkedinLink: Joi.string().optional().allow(null, ""),
+    instagramLink: Joi.string().optional().allow(null, ""),
+    youtubeLink: Joi.string().optional().allow(null, ""),
+    threadLink: Joi.string().optional().allow(null, ""),
+    pininterestLink: Joi.string().optional().allow(null, ""),
+    discordLink: Joi.string().optional().allow(null, ""),
   });
   await Validate(req, res, next, schema);
 };
