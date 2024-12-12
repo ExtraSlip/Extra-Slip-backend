@@ -10,9 +10,14 @@ const {
   Category,
   Player,
   Tag,
+  Setting,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
-const { TopicTypes, BlogStatus } = require("../../constants/Constants");
+const {
+  TopicTypes,
+  BlogStatus,
+  Settings,
+} = require("../../constants/Constants");
 const sequelize = require("../../utils/Connection");
 
 const get = async (req, res) => {
@@ -60,6 +65,23 @@ const get = async (req, res) => {
       });
     }
     blog = blog.toJSON();
+    const settings = await Setting.findAll({
+      where: {
+        key: {
+          [Op.in]: [
+            Settings.FACEBOOK,
+            Settings.DISCORD,
+            Settings.TWITTER,
+            Settings.LINKEDIN,
+            Settings.INSTAGRAM,
+            Settings.PINTREST,
+            Settings.YOUTUBE,
+            Settings.THREAD,
+          ],
+        },
+      },
+    });
+    blog.settings = settings;
     id = blog.id;
     const bookmarked = await BlogBookmark.findOne({
       where: {
@@ -253,6 +275,23 @@ const getBlogByUrl = async (req, res) => {
       },
     });
     blog = blog.toJSON();
+    const settings = await Setting.findAll({
+      where: {
+        key: {
+          [Op.in]: [
+            Settings.FACEBOOK,
+            Settings.DISCORD,
+            Settings.TWITTER,
+            Settings.LINKEDIN,
+            Settings.INSTAGRAM,
+            Settings.PINTREST,
+            Settings.YOUTUBE,
+            Settings.THREAD,
+          ],
+        },
+      },
+    });
+    blog.settings = settings;
     blog.blogTopics = await Promise.all(
       blog?.blogTopics?.map(async (x) => {
         switch (x.type) {
@@ -531,6 +570,38 @@ const addComment = async (req, res) => {
   }
 };
 
+const addCommentReply = async (req, res) => {
+  try {
+    let payload = req.body;
+    payload["repliedByUserId"] = req.user.id;
+    let comment = await BlogComment.findOne({
+      where: {
+        id: payload.commentId,
+      },
+    });
+    if (!comment) {
+      return error(res, {
+        msg: "Comment not found!!",
+        error: [],
+      });
+    }
+    await BlogComment.update(payload, {
+      where: {
+        id: payload.commentId,
+      },
+    });
+    return success(res, {
+      msg: "Comment replied successfully!!",
+      data: [comment],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
+
 const getComments = async (req, res) => {
   try {
     const blogId = req.params.blogId;
@@ -542,9 +613,15 @@ const getComments = async (req, res) => {
         {
           model: User,
           attributes: ["id", "firstName", "lastName", "image"],
+          as: "user",
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName", "image"],
+          as: "repliedBy",
         },
       ],
-      attributes: ["id", "comment", "createdAt", "blogId"],
+      attributes: ["id", "comment", "createdAt", "blogId", "reply"],
     });
     return success(res, {
       msg: "Comments listed successfully!!",
@@ -597,4 +674,5 @@ module.exports = {
   addLike,
   toggleBookmark,
   getBlogByUrl,
+  addCommentReply,
 };

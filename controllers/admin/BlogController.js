@@ -8,15 +8,18 @@ const {
   Category,
   Player,
   Admin,
+  Setting,
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
 const {
   TopicTypes,
   BlogFilterType,
   RoleType,
+  Settings,
 } = require("../../constants/Constants");
 const { getRandomNumber } = require("../../utils/Common");
 const { encrypt, decrypt, hashString } = require("../../utils/Bcrypt");
+const { relatedBlogs } = require("../api/BlogController");
 
 const topicsList = async (req, res) => {
   try {
@@ -254,6 +257,29 @@ const index = async (req, res) => {
     );
 
     if (req.query?.id) {
+      const settings = await Setting.findAll({
+        where: {
+          key: {
+            [Op.in]: [
+              Settings.FACEBOOK,
+              Settings.DISCORD,
+              Settings.TWITTER,
+              Settings.LINKEDIN,
+              Settings.INSTAGRAM,
+              Settings.PINTREST,
+              Settings.YOUTUBE,
+              Settings.THREAD,
+            ],
+          },
+        },
+      });
+      blogs = blogs.map((e) => {
+        let data = e;
+        return {
+          ...data,
+          settings,
+        };
+      });
       response = blogs;
     } else {
       response[0].blogs = blogs;
@@ -465,6 +491,29 @@ const categoryBasedUrl = (title, categoryName, randomNo) => {
   return `/articles/${categoryName}/${randomNo}-${title}`;
 };
 
+const restoreBlog = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    const blog = await Blog.findOne({ where: { id: blogId } });
+    if (blog) {
+      return error(res, {
+        msg: "Provided blog id is not deleted",
+        error: [],
+      });
+    }
+    await Blog.restore({ where: { id: blogId } });
+    return success(res, {
+      msg: "Blog restored successfully",
+      data: [],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong",
+      error: [err?.message],
+    });
+  }
+};
+
 module.exports = {
   add,
   update,
@@ -472,4 +521,5 @@ module.exports = {
   index,
   topicsList,
   updateHash,
+  restoreBlog,
 };

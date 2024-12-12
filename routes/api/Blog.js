@@ -3,6 +3,7 @@ const { BlogController } = require("../../controllers/api");
 const {
   CommentValidation,
   BookmarkValidation,
+  CommentReplyValidation,
 } = require("../../validations/BlogValidation");
 const { verifyToken } = require("../../middleware");
 
@@ -15,6 +16,12 @@ router.post(
   verifyToken,
   CommentValidation,
   BlogController.addComment
+);
+router.post(
+  "/comments/reply",
+  verifyToken,
+  CommentReplyValidation,
+  BlogController.addCommentReply
 );
 router.get("/comments/:blogId", BlogController.getComments);
 router.post("/likes/:blogId", verifyToken, BlogController.addLike);

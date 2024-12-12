@@ -72,6 +72,18 @@ const CommentValidation = async (req, res, next) => {
   await Validate(req, res, next, schema);
 };
 
+const CommentReplyValidation = async (req, res, next) => {
+  const schema = Joi.object().keys({
+    reply: Joi.string().required().messages({
+      "any.required": "Reply field is required",
+    }),
+    commentId: Joi.number().integer().required().messages({
+      "any.required": "Comment id field is required",
+    }),
+  });
+  await Validate(req, res, next, schema);
+};
+
 const BookmarkValidation = async (req, res, next) => {
   const schema = Joi.object().keys({
     blogId: Joi.number().integer().required().messages({
@@ -85,4 +97,5 @@ module.exports = {
   BlogValidation,
   CommentValidation,
   BookmarkValidation,
+  CommentReplyValidation,
 };

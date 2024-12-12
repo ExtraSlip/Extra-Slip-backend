@@ -7,6 +7,11 @@ const router = express.Router();
 
 router.get("/updateHash", verifyAdminToken([]), BlogController.updateHash);
 router.get("/", verifyAdminToken([]), BlogController.index);
+router.put(
+  "/restoreBlog/:id",
+  verifyAdminToken([]),
+  BlogController.restoreBlog
+);
 router.get("/topicsList", verifyAdminToken([]), BlogController.topicsList);
 router.post(
   "/",

@@ -33,6 +33,14 @@ const Settings = {
   SITEICON: "siteIcon",
   ADMINCONTACTEMAIL: "adminContactEmail",
   POSTURL: "postUrl",
+  FACEBOOK: "facebookLink",
+  TWITTER: "twitterLink",
+  LINKEDIN: "linkedinLink",
+  INSTAGRAM: "instagramLink",
+  YOUTUBE: "youtubeLink",
+  THREAD: "threadLink",
+  PINTREST: "pininterestLink",
+  DISCORD: "discordLink",
 };
 
 const POSTURL = {
