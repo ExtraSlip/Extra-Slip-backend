@@ -9,6 +9,7 @@ const { verifyToken } = require("../../middleware");
 
 const router = express.Router();
 
+router.get("/list", BlogController.list);
 router.get("/", BlogController.index);
 router.get("/relatedBlogs", BlogController.relatedBlogs);
 router.post(

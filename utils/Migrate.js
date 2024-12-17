@@ -27,6 +27,7 @@ const {
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 const { MenuSeeder } = require("../seeder");
+const { Op } = require("sequelize");
 
 sequelize
   .sync({ alter: true })
@@ -67,6 +68,29 @@ sequelize
       },
     });
     await MenuSeeder(admin.id);
+    const admins = await Admin.findAll({
+      where: {
+        image: {
+          [Op.eq]: null,
+        },
+      },
+    });
+    const arr = admins.map((e) => e.id);
+    let adminDetails = await AdminDetail.findAll({
+      where: {
+        image: {
+          [Op.ne]: null,
+        },
+        adminId: {
+          [Op.in]: arr,
+        },
+      },
+    });
+    await Promise.all(
+      adminDetails.map(async (e) => {
+        await Admin.update({ image: e.image }, { where: { id: e.adminId } });
+      })
+    );
     console.log("table created successfully!");
   })
   .catch((error) => {

@@ -475,6 +475,56 @@ const index = async (req, res) => {
   }
 };
 
+const list = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    console.log({ page, limit });
+    let query = {
+      status: BlogStatus.PUBLISHED,
+    };
+    let pagination = getPageAndOffset(page, limit);
+    let blogs = await Blog.findAll({
+      where: query,
+      order: [["id", "desc"]],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
+      ],
+      attributes: [
+        ["shortTitle", "title"],
+        "featuredImage",
+        "id",
+        "customUrl",
+        "categoryBasedUrl",
+      ],
+      limit: pagination.limit,
+      offset: pagination.offset,
+    });
+    return success(res, {
+      msg: "Blogs listed successfully!!",
+      data: blogs,
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
 const relatedBlogs = async (req, res) => {
   try {
     let { categoryId, id } = req.query;
@@ -675,4 +725,5 @@ module.exports = {
   toggleBookmark,
   getBlogByUrl,
   addCommentReply,
+  list,
 };
