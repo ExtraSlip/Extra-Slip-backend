@@ -510,6 +510,7 @@ const list = async (req, res) => {
         "id",
         "customUrl",
         "categoryBasedUrl",
+        "createdAt",
       ],
       limit: pagination.limit,
       offset: pagination.offset,
