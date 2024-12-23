@@ -7,7 +7,11 @@ const index = async (req, res) => {
     if (req.query.teamId) {
       query.teamId = req.query.teamId;
     }
+    if (req.query.id) {
+      query["id"] = req.query.id;
+    }
     const players = await Player.findAll({
+      where: query,
       include: [
         {
           model: Admin,
