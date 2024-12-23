@@ -12,4 +12,5 @@ module.exports = {
   MenuController: require("./MenuController"),
   BlogController: require("./BlogController"),
   SettingController: require("./SettingController"),
+  TwitterFeedController: require("./TwitterFeedController"),
 };

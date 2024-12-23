@@ -24,6 +24,7 @@ const {
   BlogComment,
   BlogTopic,
   Setting,
+  TwitterFeed,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 const { MenuSeeder } = require("../seeder");

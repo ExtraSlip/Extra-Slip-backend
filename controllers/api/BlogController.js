@@ -11,6 +11,7 @@ const {
   Player,
   Tag,
   Setting,
+  TwitterFeed,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
 const {
@@ -515,9 +516,18 @@ const list = async (req, res) => {
       limit: pagination.limit,
       offset: pagination.offset,
     });
+    const twitterFeeds = await TwitterFeed.findAll({
+      where: {
+        type: "news",
+      },
+    });
+    let response = {
+      blogs,
+      twitterFeeds,
+    };
     return success(res, {
       msg: "Blogs listed successfully!!",
-      data: blogs,
+      data: [response],
     });
   } catch (err) {
     return error(res, {

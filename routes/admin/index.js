@@ -14,5 +14,6 @@ router.use("/users", require("./User"));
 router.use("/menulist", require("./MenuList"));
 router.use("/blogs", require("./Blog"));
 router.use("/settings", require("./Setting"));
+router.use("/twitterFeeds", require("./TwitterFeed"));
 
 module.exports = router;
