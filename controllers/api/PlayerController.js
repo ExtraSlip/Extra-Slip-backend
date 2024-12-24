@@ -117,6 +117,7 @@ const getBlogsAboutPlayer = async (req, res) => {
             type: TopicTypes.PLAYER,
             topicId: playerId,
           },
+          attributes: [],
         },
       ],
     });
