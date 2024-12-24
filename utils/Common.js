@@ -49,10 +49,19 @@ const generateRandomPassword = (length) => {
   return password;
 };
 
+const createSlug = (str) => {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+};
+
 module.exports = {
   getReqInformation,
   generateToken,
   generateRandomPassword,
   getPageAndOffset,
   getRandomNumber,
+  createSlug,
 };

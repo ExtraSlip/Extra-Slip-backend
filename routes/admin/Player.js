@@ -29,5 +29,6 @@ router.put(
 );
 
 router.delete("/:id", verifyAdminToken([]), PlayerController.deletePlayer);
+router.get("/:id", verifyAdminToken([]), PlayerController.getById);
 
 module.exports = router;

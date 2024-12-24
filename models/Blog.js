@@ -32,6 +32,11 @@ const Blog = db.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    isSubTitleBulletPoint: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
     shortTitle: {
       type: DataTypes.TEXT,
       allowNull: false,

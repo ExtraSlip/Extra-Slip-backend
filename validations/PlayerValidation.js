@@ -42,6 +42,9 @@ const PlayerValidation = async (req, res, next) => {
     teams: Joi.string().optional().allow("", null).messages({
       "any.required": "Teams field is required",
     }),
+    playerQuickLinks: Joi.string().optional().allow("[]", null).messages({
+      "any.required": "Player Quick Links field is required",
+    }),
   });
   await Validate(req, res, next, schema);
 };
