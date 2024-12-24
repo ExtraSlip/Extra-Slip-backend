@@ -22,7 +22,7 @@ const BlogValidation = async (req, res, next) => {
     title: Joi.string().required().messages({
       "any.required": "Title field is required",
     }),
-    isSubTitleBulletPoint: Joi.boolean().required().messages({}),
+    isSubTitleBulletPoint: Joi.boolean().optional().default(false).messages({}),
     categoryId: Joi.number().integer().required().messages({
       "any.required": "Category id field is required",
     }),
