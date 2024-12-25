@@ -3,8 +3,8 @@ const { PlayerController } = require("../../controllers/api");
 
 const router = express.Router();
 
-router.get("/morePlayers/:team", PlayerController.morePlayers);
-router.get("/getBlogsByPlayer/:playerId", PlayerController.getBlogsAboutPlayer);
-router.get("/:id", PlayerController.getById);
+router.get("/moreInfo/:team", PlayerController.moreInfo);
+router.get("/getBlogs/:slug", PlayerController.getBlogs);
+router.get("/:slug", PlayerController.getBySlug);
 
 module.exports = router;

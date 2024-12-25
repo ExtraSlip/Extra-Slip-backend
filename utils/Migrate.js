@@ -25,10 +25,12 @@ const {
   BlogTopic,
   Setting,
   TwitterFeed,
+  TeamQuickLink,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 const { MenuSeeder } = require("../seeder");
 const { Op } = require("sequelize");
+const { createSlug } = require("./Common");
 
 sequelize
   .sync({ alter: true })
@@ -76,6 +78,33 @@ sequelize
         },
       },
     });
+    const players = await Player.findAll({
+      where: {
+        slug: {
+          [Op.eq]: "",
+        },
+      },
+    });
+    await Promise.all(
+      players.map(async (player) => {
+        player.slug = createSlug(player.name);
+        await player.save();
+      })
+    );
+
+    const teams = await Team.findAll({
+      where: {
+        slug: {
+          [Op.eq]: "",
+        },
+      },
+    });
+    await Promise.all(
+      teams.map(async (team) => {
+        team.slug = createSlug(team.name);
+        await team.save();
+      })
+    );
     const arr = admins.map((e) => e.id);
     let adminDetails = await AdminDetail.findAll({
       where: {

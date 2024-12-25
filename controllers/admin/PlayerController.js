@@ -96,6 +96,7 @@ const add = async (req, res) => {
     if (req?.files?.stats) {
       payload["stats"] = req.files?.stats[0]?.path;
     }
+    payload["slug"] = createSlug(payload.name);
     if (req?.files?.image) {
       payload["image"] = req.files?.image[0]?.path;
     }
@@ -137,6 +138,7 @@ const update = async (req, res) => {
     if (req?.files?.image) {
       payload["image"] = req.files?.image[0]?.path;
     }
+    payload["slug"] = createSlug(payload.name);
     let player = await Player.findOne({
       where: {
         id: req.params.id,

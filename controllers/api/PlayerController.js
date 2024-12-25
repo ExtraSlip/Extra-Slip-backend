@@ -9,62 +9,110 @@ const {
   BlogTopic,
 } = require("../../models");
 const PlayerQuickLink = require("../../models/PlayerQuickLink");
-const { TopicTypes } = require("../../constants/Constants");
+const { TopicTypes, TagType } = require("../../constants/Constants");
+const TeamQuickLink = require("../../models/TeamQuickLink");
 
-const getById = async (req, res) => {
+const getBySlug = async (req, res) => {
   try {
-    let id = req.params.id;
+    let slugParam = req.params.slug;
     let slug = req.query.slug ?? "";
-    if (!slug) {
-      let playerQuick = await PlayerQuickLink.findOne({
+    let type = req.query.type ?? "";
+
+    let response = {};
+    if (type == TagType.PLAYER) {
+      response = await Player.findOne({
         where: {
-          playerId: id,
+          slug: slugParam,
         },
+        include: [
+          {
+            model: Admin,
+            attributes: ["name", "email"],
+          },
+          {
+            model: TeamPlayer,
+            attributes: ["id", "playerId", "teamId"],
+            include: [
+              {
+                model: Team,
+                attributes: ["name"],
+              },
+            ],
+          },
+          {
+            model: PlayerQuickLink,
+            attributes: ["title", "slug"],
+          },
+        ],
       });
-      if (playerQuick) {
-        slug = playerQuick.slug;
+      if (!response) {
+        return error(res, {
+          msg: "Player not found!!",
+        });
       }
-    }
-    let player = await Player.findOne({
-      where: {
-        id: id,
-      },
-      include: [
-        {
-          model: Admin,
-          attributes: ["name", "email"],
+      if (!slug) {
+        let playerQuick = await PlayerQuickLink.findOne({
+          where: {
+            playerId: response.id,
+          },
+        });
+        if (playerQuick) {
+          slug = playerQuick.slug;
+        }
+      }
+      response = response.toJSON();
+      response["quickLinks"] = response.playerQuickLinks;
+      delete response.playerQuickLinks;
+      response["quickLinkInfo"] = await PlayerQuickLink.findOne({
+        where: {
+          playerId: response.id,
+          slug: slug,
         },
-        {
-          model: TeamPlayer,
-          attributes: ["id", "playerId", "teamId"],
-          include: [
-            {
-              model: Team,
-              attributes: ["name"],
-            },
-          ],
+      });
+    } else {
+      response = await Team.findOne({
+        where: {
+          slug: slugParam,
         },
-        {
-          model: PlayerQuickLink,
-          attributes: ["title", "slug"],
+        include: [
+          {
+            model: Admin,
+            attributes: ["name", "email"],
+          },
+          {
+            model: TeamQuickLink,
+            attributes: ["title", "slug"],
+          },
+        ],
+      });
+      if (!response) {
+        return error(res, {
+          msg: "Team not found!!",
+        });
+      }
+      if (!slug) {
+        let teamQuick = await TeamQuickLink.findOne({
+          where: {
+            teamId: response.id,
+          },
+        });
+        if (teamQuick) {
+          slug = teamQuick.slug;
+        }
+      }
+      response = response.toJSON();
+      response["quickLinks"] = response.teamQuickLinks;
+      delete response.teamQuickLinks;
+      response["quickLinkInfo"] = await TeamQuickLink.findOne({
+        where: {
+          teamId: response.id,
+          slug: slug,
         },
-      ],
-    });
-    if (!player) {
-      return error(res, {
-        msg: "Player not found!!",
       });
     }
-    player = player.toJSON();
-    player["playerQuickLinkInfo"] = await PlayerQuickLink.findOne({
-      where: {
-        playerId: id,
-        slug: slug,
-      },
-    });
     return success(res, {
-      data: [player],
-      msg: "Player fetched successfully!!",
+      data: [response],
+      msg: "Info fetched successfully!!",
     });
   } catch (err) {
     return error(res, {
@@ -74,20 +122,33 @@ const getById = async (req, res) => {
   }
 };
 
-const morePlayers = async (req, res) => {
+const moreInfo = async (req, res) => {
   try {
     const team = req.params.team;
-    let players = await Player.findAll({
-      where: {
-        teams: {
-          [Op.like]: `%${team}%`,
+    let response = [];
+    if (req?.query?.type == TagType.PLAYER) {
+      response = await Player.findAll({
+        where: {
+          teams: {
+            [Op.like]: `%${team}%`,
+          },
         },
-      },
-      attributes: ["id", "name", "image"],
-    });
+        attributes: ["id", "name", "image"],
+      });
+    } else {
+      response = await Team.findAll({
+        where: {
+          name: {
+            [Op.ne]: team,
+          },
+        },
+        attributes: ["id", "name", "image"],
+      });
+    }
+
     return success(res, {
-      data: players,
-      msg: "Players fetched successfully!!",
+      data: response,
+      msg: "More Info fetched successfully!!",
     });
   } catch (err) {
     return error(res, {
@@ -97,9 +158,32 @@ const morePlayers = async (req, res) => {
   }
 };
 
-const getBlogsAboutPlayer = async (req, res) => {
+const getBlogs = async (req, res) => {
   try {
-    const playerId = req.params.playerId;
+    const slug = req.params.slug;
+    let type = "";
+    let id = 0;
+    if (req.query?.type == TagType.PLAYER) {
+      type = TagType.PLAYER;
+      const data = await Player.findOne({
+        where: {
+          slug: slug,
+        },
+      });
+      if (data) {
+        id = data.id;
+      }
+    } else {
+      type = TagType.TEAM;
+      const data = await Team.findOne({
+        where: {
+          slug: slug,
+        },
+      });
+      if (data) {
+        id = data.id;
+      }
+    }
     let blogs = await Blog.findAll({
       attributes: [
         "title",
@@ -114,8 +198,8 @@ const getBlogsAboutPlayer = async (req, res) => {
         {
           model: BlogTopic,
           where: {
-            type: TopicTypes.PLAYER,
-            topicId: playerId,
+            type: type,
+            topicId: id,
           },
           attributes: [],
         },
@@ -134,7 +218,7 @@ const getBlogsAboutPlayer = async (req, res) => {
 };
 
 module.exports = {
-  getById,
-  morePlayers,
-  getBlogsAboutPlayer,
+  getBySlug,
+  moreInfo,
+  getBlogs,
 };

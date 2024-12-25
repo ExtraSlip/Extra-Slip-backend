@@ -22,4 +22,5 @@ module.exports = {
   BlogBookmark: require("./BlogBookmark"),
   Setting: require("./Setting"),
   TwitterFeed: require("./TwitterFeed"),
+  TeamQuickLink: require("./TeamQuickLink"),
 };

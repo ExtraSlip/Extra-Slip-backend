@@ -12,6 +12,10 @@ const Player = db.define("players", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  slug: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   dob: {
     type: DataTypes.DATE,
     allowNull: false,

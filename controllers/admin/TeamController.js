@@ -1,6 +1,13 @@
 const { Op } = require("sequelize");
 const { success, error } = require("../../handlers");
-const { Admin, Team, TeamPlayer, Player } = require("../../models");
+const {
+  Admin,
+  Team,
+  TeamPlayer,
+  Player,
+  TeamQuickLink,
+} = require("../../models");
+const { createSlug } = require("../../utils/Common");
 
 const index = async (req, res) => {
   try {
@@ -19,6 +26,10 @@ const index = async (req, res) => {
             },
           ],
         },
+        {
+          model: TeamQuickLink,
+          attributes: ["id", "title", "description"],
+        },
       ],
       order: [["id", "desc"]],
     });
@@ -27,6 +38,7 @@ const index = async (req, res) => {
       data: teams,
     });
   } catch (err) {
+    console.log(err);
     return error(res, {
       msg: "Something went wrong",
       error: [err?.message],
@@ -38,6 +50,10 @@ const add = async (req, res) => {
   try {
     let payload = req.body;
     payload["createdBy"] = req.user.id;
+    if (req.file?.path) {
+      payload["image"] = req.file.path;
+    }
+    payload["slug"] = createSlug(payload.name);
     const teamExists = await Team.findOne({
       where: {
         name: payload.name,
@@ -57,6 +73,19 @@ const add = async (req, res) => {
         };
       });
       await TeamPlayer.bulkCreate(teamPlayers);
+    }
+    if (payload?.teamQuickLinks != "[]" && payload?.teamQuickLinks != null) {
+      let teamQuickLinks = JSON.parse(payload?.teamQuickLinks);
+      await Promise.all(
+        teamQuickLinks.map(async (teamQuickLink) => {
+          await TeamQuickLink.create({
+            teamId: team.id,
+            title: teamQuickLink?.title,
+            slug: createSlug(teamQuickLink?.title),
+            description: teamQuickLink?.description,
+          });
+        })
+      );
     }
     return success(res, {
       msg: "Team created successfully",
@@ -86,6 +115,11 @@ const update = async (req, res) => {
         msg: "Team name already exists",
       });
     }
+    if (payload.image) delete payload.image;
+    if (req.file?.path) {
+      payload["image"] = req.file.path;
+    }
+    payload["slug"] = createSlug(payload.name);
     const team = await Team.findOne({
       where: {
         id: req.params.id,
@@ -114,6 +148,24 @@ const update = async (req, res) => {
         };
       });
       await TeamPlayer.bulkCreate(teamPlayers);
+    }
+    await TeamQuickLink.destroy({
+      where: {
+        teamId: team.id,
+      },
+    });
+    if (payload?.teamQuickLinks != "[]" && payload?.teamQuickLinks != null) {
+      let teamQuickLinks = JSON.parse(payload?.teamQuickLinks);
+      await Promise.all(
+        teamQuickLinks.map(async (teamQuickLink) => {
+          await TeamQuickLink.create({
+            teamId: team.id,
+            title: teamQuickLink?.title,
+            slug: createSlug(teamQuickLink?.title),
+            description: teamQuickLink?.description,
+          });
+        })
+      );
     }
     return success(res, {
       msg: "Team updated successfully",
