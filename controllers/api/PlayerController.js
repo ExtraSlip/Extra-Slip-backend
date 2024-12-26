@@ -9,7 +9,7 @@ const {
   BlogTopic,
 } = require("../../models");
 const PlayerQuickLink = require("../../models/PlayerQuickLink");
-const { TopicTypes, TagType } = require("../../constants/Constants");
+const { TopicTypes } = require("../../constants/Constants");
 const TeamQuickLink = require("../../models/TeamQuickLink");
 
 const getBySlug = async (req, res) => {
@@ -19,7 +19,7 @@ const getBySlug = async (req, res) => {
     let type = req.query.type ?? "";
 
     let response = {};
-    if (type == TagType.PLAYER) {
+    if (type == TopicTypes.PLAYER) {
       response = await Player.findOne({
         where: {
           slug: slugParam,
@@ -126,7 +126,7 @@ const moreInfo = async (req, res) => {
   try {
     const team = req.params.team;
     let response = [];
-    if (req?.query?.type == TagType.PLAYER) {
+    if (req?.query?.type == TopicTypes.PLAYER) {
       response = await Player.findAll({
         where: {
           teams: {
@@ -163,8 +163,8 @@ const getBlogs = async (req, res) => {
     const slug = req.params.slug;
     let type = "";
     let id = 0;
-    if (req.query?.type == TagType.PLAYER) {
-      type = TagType.PLAYER;
+    if (req.query?.type == TopicTypes.PLAYER) {
+      type = TopicTypes.PLAYER;
       const data = await Player.findOne({
         where: {
           slug: slug,
@@ -174,7 +174,7 @@ const getBlogs = async (req, res) => {
         id = data.id;
       }
     } else {
-      type = TagType.TEAM;
+      type = TopicTypes.TEAM;
       const data = await Team.findOne({
         where: {
           slug: slug,

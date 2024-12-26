@@ -21,5 +21,6 @@ router.put(
   TeamController.update
 );
 router.delete("/:id", verifyAdminToken([]), TeamController.deleteTeam);
+router.get("/:id", verifyAdminToken([]), TeamController.getById);
 
 module.exports = router;

@@ -9,6 +9,7 @@ const {
   Player,
   Admin,
   Setting,
+  Team,
 } = require("../../models");
 const sequelize = require("../../utils/Connection");
 const {
@@ -18,8 +19,7 @@ const {
   Settings,
 } = require("../../constants/Constants");
 const { getRandomNumber } = require("../../utils/Common");
-const { encrypt, decrypt, hashString } = require("../../utils/Bcrypt");
-const { relatedBlogs } = require("../api/BlogController");
+const { hashString } = require("../../utils/Bcrypt");
 
 const topicsList = async (req, res) => {
   try {
@@ -51,7 +51,17 @@ const topicsList = async (req, res) => {
       ],
       raw: true,
     });
-    topics = [...tags, ...players];
+    let teams = await Team.findAll({
+      where: query,
+      attributes: [
+        ["id", "topicId"],
+        "name",
+        [sequelize.literal(`'team'`), "type"],
+        [sequelize.literal(`'0'`), "id"],
+      ],
+      raw: true,
+    });
+    topics = [...tags, ...players, ...teams];
     topics = topics.map((e, index) => {
       return {
         ...e,
@@ -235,6 +245,12 @@ const index = async (req, res) => {
                 x["topic"] = await Tag.findOne({
                   where: { id: x.topicId },
                   attributes: ["id", "name", "image"],
+                });
+                break;
+              case TopicTypes.TEAM:
+                x["topic"] = await Team.findOne({
+                  where: { id: x.topicId },
+                  attributes: ["id", "name", "image", "slug"],
                 });
                 break;
 
