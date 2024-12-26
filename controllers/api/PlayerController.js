@@ -124,14 +124,26 @@ const getBySlug = async (req, res) => {
 
 const moreInfo = async (req, res) => {
   try {
-    const team = req.params.team;
+    const slug = req.params.slug;
     let response = [];
     if (req?.query?.type == TopicTypes.PLAYER) {
+      const player = await Player.findOne({
+        where: {
+          slug,
+        },
+        attributes: ["id", "teams"],
+      });
+      let arr = player?.teams?.split(",") ?? [];
+      arr = arr.map((e) => {
+        return {
+          teams: {
+            [Op.like]: `%${e}%`,
+          },
+        };
+      });
       response = await Player.findAll({
         where: {
-          teams: {
-            [Op.like]: `%${team}%`,
-          },
+          [Op.or]: arr,
         },
         attributes: ["id", "name", "image"],
       });
@@ -139,7 +151,7 @@ const moreInfo = async (req, res) => {
       response = await Team.findAll({
         where: {
           name: {
-            [Op.ne]: team,
+            [Op.ne]: slug,
           },
         },
         attributes: ["id", "name", "image"],
