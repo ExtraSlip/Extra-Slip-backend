@@ -212,9 +212,50 @@ const deleteTeam = async (req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    let id = req.params.id;
+    const team = await Team.findAll({
+      where: {
+        id,
+      },
+      include: [
+        {
+          model: Admin,
+          attributes: ["name", "email"],
+        },
+        {
+          model: TeamPlayer,
+          include: [
+            {
+              model: Player,
+              attributes: ["name"],
+            },
+          ],
+        },
+        {
+          model: TeamQuickLink,
+          attributes: ["id", "title", "description"],
+        },
+      ],
+      order: [["id", "desc"]],
+    });
+    return success(res, {
+      msg: "Team fetched successfully",
+      data: team,
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong",
+      error: [err?.message],
+    });
+  }
+};
+
 module.exports = {
   index,
   add,
   update,
   deleteTeam,
+  getById,
 };

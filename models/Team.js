@@ -16,6 +16,10 @@ const Team = db.define("teams", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   nickName: {
     type: DataTypes.STRING,
     allowNull: true,

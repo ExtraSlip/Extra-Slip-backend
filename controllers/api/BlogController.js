@@ -12,6 +12,7 @@ const {
   Tag,
   Setting,
   TwitterFeed,
+  Team,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
 const {
@@ -102,10 +103,15 @@ const get = async (req, res) => {
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
               where: { id: x.topicId },
+              attributes: ["id", "name", "image"],
+            });
+            break;
+          case TopicTypes.TEAM:
+            x["topic"] = await Team.findOne({
+              where: { id: x.topicId },
               attributes: ["id", "name", "image", "slug"],
             });
             break;
-
           default:
             x["topic"] = {
               id: 0,
@@ -305,6 +311,12 @@ const getBlogByUrl = async (req, res) => {
             break;
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name", "image"],
+            });
+            break;
+          case TopicTypes.TEAM:
+            x["topic"] = await Team.findOne({
               where: { id: x.topicId },
               attributes: ["id", "name", "image", "slug"],
             });

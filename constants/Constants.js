@@ -71,6 +71,7 @@ const CommentStatus = {
 const TopicTypes = {
   TAG: "tag",
   PLAYER: "player",
+  TEAM: "team",
   OTHER: "other",
 };
 

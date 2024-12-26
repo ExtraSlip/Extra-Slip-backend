@@ -10,6 +10,7 @@ const TeamValidation = async (req, res, next) => {
       "any.required": "Players field is required",
     }),
     image: Joi.string().optional().allow(null, ""),
+    description: Joi.string().optional().allow(null, ""),
     nickName: Joi.string().optional().allow(null, ""),
     netWorth: Joi.string().optional().allow(null, ""),
     odiCaptain: Joi.string().optional().allow(null, ""),
