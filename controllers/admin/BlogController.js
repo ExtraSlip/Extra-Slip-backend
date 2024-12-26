@@ -234,7 +234,7 @@ const index = async (req, res) => {
               case TopicTypes.TAG:
                 x["topic"] = await Tag.findOne({
                   where: { id: x.topicId },
-                  attributes: ["id", "name", "image", "slug"],
+                  attributes: ["id", "name", "image"],
                 });
                 break;
 

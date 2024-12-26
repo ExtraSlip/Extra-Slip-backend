@@ -102,7 +102,7 @@ const get = async (req, res) => {
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name", "image", "slug"],
+              attributes: ["id", "name", "image"],
             });
             break;
 
@@ -306,7 +306,7 @@ const getBlogByUrl = async (req, res) => {
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name", "image", "slug"],
+              attributes: ["id", "name", "image"],
             });
             break;
 
