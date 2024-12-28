@@ -496,6 +496,9 @@ const customUrl = (title, randomNo) => {
     .replaceAll(/[^\w\s]/gi, "-")
     .replaceAll(/\s+/g, "-")
     .toLowerCase();
+  let titleArr = title.split("-");
+  titleArr = titleArr.filter((e) => e != " ");
+  title = titleArr.join("-");
   return `/articles/${randomNo}-${title}`;
 };
 
@@ -504,10 +507,16 @@ const categoryBasedUrl = (title, categoryName, randomNo) => {
     .replaceAll(/[^\w\s]/gi, "-")
     .replaceAll(/\s+/g, "-")
     .toLowerCase();
+  let titleArr = title.split("-");
+  titleArr = titleArr.filter((e) => e != "");
+  title = titleArr.join("-");
   categoryName = categoryName
     .replaceAll(/[^\w\s]/gi, "-")
     .replaceAll(/\s+/g, "-")
     .toLowerCase();
+  let categoryArr = categoryName.split("-");
+  categoryArr = categoryArr.filter((e) => e != "");
+  categoryName = categoryArr.join("-");
   return `/articles/${categoryName}/${randomNo}-${title}`;
 };
 

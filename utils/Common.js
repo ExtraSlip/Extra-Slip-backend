@@ -50,11 +50,15 @@ const generateRandomPassword = (length) => {
 };
 
 const createSlug = (str) => {
-  return str
+  let slug = str
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9\s-]/g, "")
     .replace(/\s+/g, "-");
+  let slugArr = slug.split("-");
+  slugArr = slugArr.filter((e) => e != "");
+  slug = slugArr.join("-");
+  return slug;
 };
 
 module.exports = {
