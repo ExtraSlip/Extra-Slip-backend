@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const { error, success } = require("../../handlers");
 const {
   Blog,
@@ -10,17 +10,33 @@ const {
   Category,
   Player,
   Tag,
+  Setting,
+  TwitterFeed,
+  Team,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
-const { TopicTypes } = require("../../constants/Constants");
+const {
+  TopicTypes,
+  BlogStatus,
+  Settings,
+} = require("../../constants/Constants");
 const sequelize = require("../../utils/Connection");
 
 const get = async (req, res) => {
   try {
     let id = req.params.id;
+    console.log(id);
     let blog = await Blog.findOne({
       where: {
-        id,
+        [Op.or]: [
+          {
+            id,
+          },
+          {
+            blogRandomId: id,
+          },
+        ],
+        status: BlogStatus.PUBLISHED,
       },
       include: [
         {
@@ -32,48 +48,84 @@ const get = async (req, res) => {
         },
         {
           model: Admin,
-          attributes: ["name", "image"],
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
     });
+    if (blog == null) {
+      return error(res, {
+        msg: "Blog not found!!",
+        error: ["Blog not found!!"],
+      });
+    }
+    blog = blog.toJSON();
+    const settings = await Setting.findAll({
+      where: {
+        key: {
+          [Op.in]: [
+            Settings.FACEBOOK,
+            Settings.DISCORD,
+            Settings.TWITTER,
+            Settings.LINKEDIN,
+            Settings.INSTAGRAM,
+            Settings.PINTREST,
+            Settings.YOUTUBE,
+            Settings.THREAD,
+          ],
+        },
+      },
+    });
+    blog.settings = settings;
+    id = blog.id;
     const bookmarked = await BlogBookmark.findOne({
       where: {
         blogId: id,
         userId: req?.userId ?? 0,
       },
     });
-    blog = blog.toJSON();
     blog.blogTopics = await Promise.all(
       blog?.blogTopics?.map(async (x) => {
         switch (x.type) {
-          case TopicTypes.CATEGORY:
-            x["topic"] = await Category.findOne({
-              where: { id: x.topicId },
-              attributes: ["id", "name"],
-            });
-            break;
           case TopicTypes.PLAYER:
             x["topic"] = await Player.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name"],
+              attributes: ["id", "name", "image", "slug"],
             });
             break;
           case TopicTypes.TAG:
             x["topic"] = await Tag.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name"],
+              attributes: ["id", "name", "image"],
             });
             break;
-
+          case TopicTypes.TEAM:
+            x["topic"] = await Team.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name", "image", "slug"],
+            });
+            break;
           default:
             x["topic"] = {
               id: 0,
               name: x.name,
+              image: "",
+              slug: "",
             };
             break;
         }
         return x;
       })
+    );
+    blog.blogTopics = blog.blogTopics?.filter(
+      (e) => e?.topic?.name != null && e?.topic?.name != ""
     );
     blog.isBookmarked = bookmarked ? true : false;
     blog.extraSlipRecommended = await Blog.findAll({
@@ -81,13 +133,17 @@ const get = async (req, res) => {
         id: {
           [Op.ne]: blog.id,
         },
+        status: BlogStatus.PUBLISHED,
       },
+      order: [["id", "desc"]],
       attributes: [
         "id",
-        "title",
+        ["shortTitle", "title"],
         "subTitle",
         "featuredImage",
         "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
         [
           sequelize.literal(
             "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
@@ -99,6 +155,18 @@ const get = async (req, res) => {
         {
           model: Category,
           attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
       limit: 5,
@@ -108,13 +176,17 @@ const get = async (req, res) => {
         id: {
           [Op.ne]: blog.id,
         },
+        status: BlogStatus.PUBLISHED,
       },
+      order: [["id", "desc"]],
       attributes: [
         "id",
-        "title",
+        ["shortTitle", "title"],
         "subTitle",
         "featuredImage",
         "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
         [
           sequelize.literal(
             "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
@@ -126,6 +198,228 @@ const get = async (req, res) => {
         {
           model: Category,
           attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
+      ],
+      limit: 5,
+    });
+    return success(res, {
+      msg: "Blog listed successfully!!",
+      data: [blog],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
+
+const getBlogByUrl = async (req, res) => {
+  try {
+    let url = req.query.url;
+    if (!url) {
+      return error(res, {
+        msg: "Blog url not found!!",
+        error: ["Blog url not found!!"],
+      });
+    }
+    let blog = await Blog.findOne({
+      where: {
+        [Op.or]: [
+          {
+            customUrlHash: url,
+          },
+          {
+            categoryBasedUrlHash: url,
+          },
+        ],
+        status: BlogStatus.PUBLISHED,
+      },
+      include: [
+        {
+          model: BlogTopic,
+        },
+        {
+          model: BlogComment,
+          attributes: [],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
+      ],
+    });
+    if (!blog) {
+      return error(res, {
+        msg: "Blog not found!!",
+        error: ["Blog not found!!"],
+      });
+    }
+    id = blog.id;
+    const bookmarked = await BlogBookmark.findOne({
+      where: {
+        blogId: id,
+        userId: req?.userId ?? 0,
+      },
+    });
+    blog = blog.toJSON();
+    const settings = await Setting.findAll({
+      where: {
+        key: {
+          [Op.in]: [
+            Settings.FACEBOOK,
+            Settings.DISCORD,
+            Settings.TWITTER,
+            Settings.LINKEDIN,
+            Settings.INSTAGRAM,
+            Settings.PINTREST,
+            Settings.YOUTUBE,
+            Settings.THREAD,
+          ],
+        },
+      },
+    });
+    blog.settings = settings;
+    blog.blogTopics = await Promise.all(
+      blog?.blogTopics?.map(async (x) => {
+        switch (x.type) {
+          case TopicTypes.PLAYER:
+            x["topic"] = await Player.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name", "image", "slug"],
+            });
+            break;
+          case TopicTypes.TAG:
+            x["topic"] = await Tag.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name", "image"],
+            });
+            break;
+          case TopicTypes.TEAM:
+            x["topic"] = await Team.findOne({
+              where: { id: x.topicId },
+              attributes: ["id", "name", "image", "slug"]
+            });
+            break;
+
+          default:
+            x["topic"] = {
+              id: 0,
+              name: x.name,
+              image: "",
+              slug: "",
+            };
+            break;
+        }
+        return x;
+      })
+    );
+    blog.blogTopics = blog.blogTopics?.filter(
+      (e) => e?.topic?.name != null && e?.topic?.name != ""
+    );
+    blog.isBookmarked = bookmarked ? true : false;
+    blog.extraSlipRecommended = await Blog.findAll({
+      where: {
+        id: {
+          [Op.ne]: blog.id,
+        },
+        status: BlogStatus.PUBLISHED,
+      },
+      order: [["id", "desc"]],
+      attributes: [
+        "id",
+        ["shortTitle", "title"],
+        "subTitle",
+        "featuredImage",
+        "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+          ),
+          "comments",
+        ],
+      ],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
+      ],
+      limit: 5,
+    });
+    blog.recommended = await Blog.findAll({
+      where: {
+        id: {
+          [Op.ne]: blog.id,
+        },
+        status: BlogStatus.PUBLISHED,
+      },
+      order: [["id", "desc"]],
+      attributes: [
+        "id",
+        ["shortTitle", "title"],
+        "subTitle",
+        "featuredImage",
+        "createdAt",
+        "customUrl",
+        "categoryBasedUrl",
+        [
+          sequelize.literal(
+            "(SELECT COUNT(*) FROM blogComments WHERE blogComments.blogId = blogs.id)"
+          ),
+          "comments",
+        ],
+      ],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
         },
       ],
       limit: 5,
@@ -146,20 +440,41 @@ const index = async (req, res) => {
   try {
     let { categoryId, page = 1, limit = 10 } = req.query;
     console.log({ page, limit });
-    let query = {};
+    let query = {
+      status: BlogStatus.PUBLISHED,
+    };
     let pagination = getPageAndOffset(page, limit);
     if (categoryId) {
       query["categoryId"] = categoryId;
     }
     let blogs = await Blog.findAll({
       where: query,
+      order: [["id", "desc"]],
       include: [
         {
           model: Category,
           attributes: ["id", "name"],
         },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
       ],
-      attributes: ["title", "featuredImage", "id"],
+      attributes: [
+        ["shortTitle", "title"],
+        "featuredImage",
+        "id",
+        "customUrl",
+        "categoryBasedUrl",
+      ],
       limit: pagination.limit,
       offset: pagination.offset,
     });
@@ -175,6 +490,66 @@ const index = async (req, res) => {
   }
 };
 
+const list = async (req, res) => {
+  try {
+    let { page = 1, limit = 10 } = req.query;
+    console.log({ page, limit });
+    let query = {
+      status: BlogStatus.PUBLISHED,
+    };
+    let pagination = getPageAndOffset(page, limit);
+    let blogs = await Blog.findAll({
+      where: query,
+      order: [["id", "desc"]],
+      include: [
+        {
+          model: Category,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
+      ],
+      attributes: [
+        ["shortTitle", "title"],
+        "featuredImage",
+        "id",
+        "customUrl",
+        "categoryBasedUrl",
+        "createdAt",
+      ],
+      limit: pagination.limit,
+      offset: pagination.offset,
+    });
+    const twitterFeeds = await TwitterFeed.findAll({
+      where: {
+        type: "news",
+      },
+    });
+    let response = {
+      blogs,
+      twitterFeeds,
+    };
+    return success(res, {
+      msg: "Blogs listed successfully!!",
+      data: [response],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
 const relatedBlogs = async (req, res) => {
   try {
     let { categoryId, id } = req.query;
@@ -189,7 +564,28 @@ const relatedBlogs = async (req, res) => {
     }
     let blogs = await Blog.findAll({
       where: query,
-      attributes: ["title", "featuredImage", "id"],
+      order: [["id", "desc"]],
+      attributes: [
+        ["shortTitle", "title"],
+        "featuredImage",
+        "id",
+        "customUrl",
+        "categoryBasedUrl",
+      ],
+      include: [
+        {
+          model: Admin,
+          attributes: [
+            "id",
+            "name",
+            "image",
+            [
+              literal("(SELECT value FROM settings WHERE `key` = 'postUrl')"),
+              "urlSetting",
+            ],
+          ],
+        },
+      ],
       order: [["id", "desc"]],
       limit: 5,
     });
@@ -249,6 +645,38 @@ const addComment = async (req, res) => {
   }
 };
 
+const addCommentReply = async (req, res) => {
+  try {
+    let payload = req.body;
+    payload["repliedByUserId"] = req.user.id;
+    let comment = await BlogComment.findOne({
+      where: {
+        id: payload.commentId,
+      },
+    });
+    if (!comment) {
+      return error(res, {
+        msg: "Comment not found!!",
+        error: [],
+      });
+    }
+    await BlogComment.update(payload, {
+      where: {
+        id: payload.commentId,
+      },
+    });
+    return success(res, {
+      msg: "Comment replied successfully!!",
+      data: [comment],
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
+
 const getComments = async (req, res) => {
   try {
     const blogId = req.params.blogId;
@@ -260,9 +688,15 @@ const getComments = async (req, res) => {
         {
           model: User,
           attributes: ["id", "firstName", "lastName", "image"],
+          as: "user",
+        },
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName", "image"],
+          as: "repliedBy",
         },
       ],
-      attributes: ["id", "comment", "createdAt", "blogId"],
+      attributes: ["id", "comment", "createdAt", "blogId", "reply"],
     });
     return success(res, {
       msg: "Comments listed successfully!!",
@@ -314,4 +748,7 @@ module.exports = {
   getComments,
   addLike,
   toggleBookmark,
+  getBlogByUrl,
+  addCommentReply,
+  list,
 };

@@ -5,10 +5,10 @@ const { PollValidation } = require("../../validations/PollValidation");
 const { upload } = require("../../helpers");
 const router = express.Router();
 
-router.get("/", verifyAdminToken, PollController.index);
+router.get("/", verifyAdminToken([]), PollController.index);
 router.post(
   "/",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.fields([
     { name: "pollOptionImage1", maxCount: 1 },
     { name: "pollOptionImage2", maxCount: 1 },
@@ -27,7 +27,7 @@ router.post(
 );
 router.put(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.fields([
     { name: "pollOptionImage1", maxCount: 1 },
     { name: "pollOptionImage2", maxCount: 1 },
@@ -44,13 +44,17 @@ router.put(
   PollValidation,
   PollController.update
 );
-router.delete("/:id", verifyAdminToken, PollController.deletePoll);
+router.delete("/:id", verifyAdminToken([]), PollController.deletePoll);
 router.delete(
   "/pollOptions/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   PollController.deletePollOption
 );
 
-router.get("/pollOptions/:id", verifyAdminToken, PollController.getPollOptions);
+router.get(
+  "/pollOptions/:id",
+  verifyAdminToken([]),
+  PollController.getPollOptions
+);
 
 module.exports = router;

@@ -48,48 +48,67 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-const verifyAdminToken = async (req, res, next) => {
-  console.log(req.headers["authorization"]);
-  let token =
-    req.body.token ||
-    req.query.token ||
-    req.headers["x-access-token"] ||
-    req.headers["authorization"] ||
-    req.headers["Authorization"];
+const verifyAdminToken = (roles, req, res, next) => {
+  return async (req, res, next) => {
+    console.log(req.headers["authorization"]);
+    let token =
+      req.body.token ||
+      req.query.token ||
+      req.headers["x-access-token"] ||
+      req.headers["authorization"] ||
+      req.headers["Authorization"];
 
-  if (!token) {
-    return error(res, {
-      status: false,
-      msg: "A token is required for authentication",
-      statuscode: 499,
-    });
-  }
-
-  token = token.split(" ")[1];
-  try {
-    const decoded = jwt.verify(token, SECRET_KEY);
-    const admin = await Admin.findByPk(decoded.id, {
-      attributes: { exclude: ["updatedAt", "password"] },
-      raw: true,
-    });
-
-    if (admin?.isBlocked) {
+    if (!token) {
       return error(res, {
         status: false,
-        msg: "Your account is blocked please contact super admin",
+        msg: "A token is required for authentication",
+        statuscode: 499,
       });
     }
 
-    req.user = admin;
-    next();
-  } catch (err) {
-    return error(res, {
-      status: false,
-      msg: "Invalid Token",
-      error: [err.message],
-      statuscode: 401,
-    });
-  }
+    token = token.split(" ")[1];
+    try {
+      const decoded = jwt.verify(token, SECRET_KEY);
+      const admin = await Admin.findByPk(decoded.id, {
+        attributes: { exclude: ["updatedAt", "password"] },
+        raw: true,
+      });
+
+      if (!admin) {
+        return error(res, {
+          status: false,
+          msg: "Invalid Token",
+          statuscode: 401,
+        });
+      }
+
+      if (admin?.isBlocked) {
+        return error(res, {
+          status: false,
+          msg: "Your account is blocked please contact super admin",
+        });
+      }
+      if (roles?.length != 0) {
+        if (!roles.includes(admin.type)) {
+          return error(res, {
+            status: false,
+            msg: "You are not authorized to access this route",
+            statuscode: 403,
+          });
+        }
+      }
+
+      req.user = admin;
+      next();
+    } catch (err) {
+      return error(res, {
+        status: false,
+        msg: "Invalid Token",
+        error: [err.message],
+        statuscode: 401,
+      });
+    }
+  };
 };
 
 module.exports = {

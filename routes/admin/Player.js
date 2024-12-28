@@ -5,10 +5,10 @@ const { PlayerValidation } = require("../../validations/PlayerValidation");
 const { upload } = require("../../helpers");
 const router = express.Router();
 
-router.get("/", verifyAdminToken, PlayerController.index);
+router.get("/", verifyAdminToken([]), PlayerController.index);
 router.post(
   "/",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.fields([
     { name: "stats", maxCount: 1 },
     { name: "image", maxCount: 1 },
@@ -19,7 +19,7 @@ router.post(
 
 router.put(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.fields([
     { name: "stats", maxCount: 1 },
     { name: "image", maxCount: 1 },
@@ -28,6 +28,7 @@ router.put(
   PlayerController.update
 );
 
-router.delete("/:id", verifyAdminToken, PlayerController.deletePlayer);
+router.delete("/:id", verifyAdminToken([]), PlayerController.deletePlayer);
+router.get("/:id", verifyAdminToken([]), PlayerController.getById);
 
 module.exports = router;

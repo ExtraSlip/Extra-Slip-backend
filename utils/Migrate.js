@@ -23,9 +23,14 @@ const {
   BlogBookmark,
   BlogComment,
   BlogTopic,
+  Setting,
+  TwitterFeed,
+  TeamQuickLink,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 const { MenuSeeder } = require("../seeder");
+const { Op } = require("sequelize");
+const { createSlug } = require("./Common");
 
 sequelize
   .sync({ alter: true })
@@ -35,7 +40,7 @@ sequelize
       name: "Admin",
       email: "admin@gmail.com",
       username: "admin",
-      type: RoleType.SUPERADMIN,
+      type: RoleType.ADMIN,
       registerStep: RegisterStep.COMPLETED,
       password: hash,
     };
@@ -66,6 +71,56 @@ sequelize
       },
     });
     await MenuSeeder(admin.id);
+    const admins = await Admin.findAll({
+      where: {
+        image: {
+          [Op.eq]: null,
+        },
+      },
+    });
+    const players = await Player.findAll({
+      where: {
+        slug: {
+          [Op.eq]: "",
+        },
+      },
+    });
+    await Promise.all(
+      players.map(async (player) => {
+        player.slug = createSlug(player.name);
+        await player.save();
+      })
+    );
+
+    const teams = await Team.findAll({
+      where: {
+        slug: {
+          [Op.eq]: "",
+        },
+      },
+    });
+    await Promise.all(
+      teams.map(async (team) => {
+        team.slug = createSlug(team.name);
+        await team.save();
+      })
+    );
+    const arr = admins.map((e) => e.id);
+    let adminDetails = await AdminDetail.findAll({
+      where: {
+        image: {
+          [Op.ne]: null,
+        },
+        adminId: {
+          [Op.in]: arr,
+        },
+      },
+    });
+    await Promise.all(
+      adminDetails.map(async (e) => {
+        await Admin.update({ image: e.image }, { where: { id: e.adminId } });
+      })
+    );
     console.log("table created successfully!");
   })
   .catch((error) => {

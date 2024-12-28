@@ -9,19 +9,19 @@ const {
 const { upload } = require("../../helpers");
 const router = express.Router();
 
-router.get("/single/:id?", verifyAdminToken, UserController.index);
-router.post("/", verifyAdminToken, UserValidation, UserController.add);
+router.get("/single/:id?", verifyAdminToken([]), UserController.index);
+router.post("/", verifyAdminToken([]), UserValidation, UserController.add);
 router.put(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   UpdateUserValidation,
   UserController.update
 );
-router.delete("/:id", verifyAdminToken, UserController.deleteAdmin);
-router.get("/userinfo", verifyAdminToken, UserController.userInfo);
+router.delete("/:id", verifyAdminToken([]), UserController.deleteAdmin);
+router.get("/userinfo", verifyAdminToken([]), UserController.userInfo);
 router.post(
   "/userinfo",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   UpdateUserInfoValidation,
   UserController.updateUserInfo
@@ -29,12 +29,12 @@ router.post(
 
 router.put(
   "/userinfo/:adminId",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   UpdateUserInfoValidation,
   UserController.updateUserInfoByAdmin
 );
 
-router.get("/all", verifyAdminToken, UserController.getUserList);
+router.get("/all", verifyAdminToken([]), UserController.getUserList);
 
 module.exports = router;

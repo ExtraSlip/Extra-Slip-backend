@@ -16,7 +16,7 @@ const Admin = db.define("admins", {
   type: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: RoleType.SUPERADMIN,
+    defaultValue: RoleType.ADMIN,
   },
   username: {
     type: DataTypes.STRING,
@@ -62,7 +62,7 @@ const Admin = db.define("admins", {
   },
 });
 
-Admin.hasMany(MenuPermission, { foreignKey: "userId" })
+Admin.hasMany(MenuPermission, { foreignKey: "userId" });
 MenuPermission.belongsTo(Admin, { foreignKey: "userId" });
 
 module.exports = Admin;

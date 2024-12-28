@@ -15,6 +15,11 @@ const getReqInformation = (req) => {
     baseUrl: baseUrl,
   };
 };
+const getRandomNumber = (n) => {
+  const start = Math.pow(10, n - 1);
+  const end = Math.pow(10, n) - 1;
+  return Math.floor(Math.random() * (end - start + 1)) + start;
+};
 
 const generateToken = async (data) => {
   const accessToken = jwt.sign(
@@ -44,9 +49,19 @@ const generateRandomPassword = (length) => {
   return password;
 };
 
+const createSlug = (str) => {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+};
+
 module.exports = {
   getReqInformation,
   generateToken,
   generateRandomPassword,
   getPageAndOffset,
+  getRandomNumber,
+  createSlug,
 };

@@ -1,5 +1,7 @@
 const { success, error } = require("../../handlers");
 const { Player, Admin, TeamPlayer, Team } = require("../../models");
+const PlayerQuickLink = require("../../models/PlayerQuickLink");
+const { createSlug } = require("../../utils/Common");
 
 const index = async (req, res) => {
   try {
@@ -7,7 +9,11 @@ const index = async (req, res) => {
     if (req.query.teamId) {
       query.teamId = req.query.teamId;
     }
+    if (req.query.id) {
+      query["id"] = req.query.id;
+    }
     const players = await Player.findAll({
+      where: query,
       include: [
         {
           model: Admin,
@@ -38,6 +44,51 @@ const index = async (req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    let query = {};
+    query["id"] = req.params.id;
+    const players = await Player.findAll({
+      where: query,
+      include: [
+        {
+          model: Admin,
+          attributes: ["name", "email"],
+        },
+        {
+          model: TeamPlayer,
+          attributes: ["id", "playerId", "teamId"],
+          include: [
+            {
+              model: Team,
+              attributes: ["name"],
+            },
+          ],
+        },
+        {
+          model: PlayerQuickLink,
+          attributes: ["id", "title", "slug", "description"],
+        },
+      ],
+    });
+    if (players.length == 0) {
+      return error(res, {
+        msg: "Player not found",
+        error: ["Player not found"],
+      });
+    }
+    return success(res, {
+      msg: "Player fetched successfully",
+      data: players,
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong",
+      error: [err?.message],
+    });
+  }
+};
+
 const add = async (req, res) => {
   try {
     let payload = req.body;
@@ -45,10 +96,27 @@ const add = async (req, res) => {
     if (req?.files?.stats) {
       payload["stats"] = req.files?.stats[0]?.path;
     }
+    payload["slug"] = createSlug(payload.name);
     if (req?.files?.image) {
       payload["image"] = req.files?.image[0]?.path;
     }
     const player = await Player.create(payload);
+    if (
+      payload?.playerQuickLinks != "[]" &&
+      payload?.playerQuickLinks != null
+    ) {
+      let playerQuickLinks = JSON.parse(payload?.playerQuickLinks);
+      await Promise.all(
+        playerQuickLinks.map(async (playerQuickLink) => {
+          await PlayerQuickLink.create({
+            playerId: player.id,
+            title: playerQuickLink?.title,
+            slug: createSlug(playerQuickLink?.title),
+            description: playerQuickLink?.description,
+          });
+        })
+      );
+    }
     return success(res, {
       msg: "Player created successfully",
       data: [player],
@@ -70,6 +138,7 @@ const update = async (req, res) => {
     if (req?.files?.image) {
       payload["image"] = req.files?.image[0]?.path;
     }
+    payload["slug"] = createSlug(payload.name);
     let player = await Player.findOne({
       where: {
         id: req.params.id,
@@ -85,6 +154,27 @@ const update = async (req, res) => {
         id: req.params.id,
       },
     });
+    await PlayerQuickLink.destroy({
+      where: {
+        playerId: player.id,
+      },
+    });
+    if (
+      payload?.playerQuickLinks != "[]" &&
+      payload?.playerQuickLinks != null
+    ) {
+      let playerQuickLinks = JSON.parse(payload?.playerQuickLinks);
+      await Promise.all(
+        playerQuickLinks.map(async (playerQuickLink) => {
+          await PlayerQuickLink.create({
+            playerId: player.id,
+            title: playerQuickLink?.title,
+            slug: createSlug(playerQuickLink?.title),
+            description: playerQuickLink?.description,
+          });
+        })
+      );
+    }
     return success(res, {
       msg: "Player updated successfully",
       data: [],
@@ -128,4 +218,5 @@ module.exports = {
   add,
   update,
   deletePlayer,
+  getById,
 };

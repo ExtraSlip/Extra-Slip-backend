@@ -11,10 +11,6 @@ const Tag = db.define("tags", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  tagType: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   about: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -23,12 +19,36 @@ const Tag = db.define("tags", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  inFocus: {
-    type: DataTypes.TEXT,
+  facebookLink: {
+    type: DataTypes.STRING,
     allowNull: true,
   },
-  webStories: {
-    type: DataTypes.TEXT,
+  twitterLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  linkedinLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  instagramLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  youtubeLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  threadLink: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
+  pininterestLink: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  discordLink: {
+    type: DataTypes.STRING,
     allowNull: true,
   },
 });

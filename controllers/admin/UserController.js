@@ -289,6 +289,16 @@ const updateUserInfo = async (req, res) => {
     let payload = req.body;
     if (req?.file?.path) {
       payload["image"] = req.file?.path;
+      await Admin.update(
+        {
+          image: req.file?.path,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
     }
     let userManagement = await AdminDetail.findOne({
       where: {
@@ -325,6 +335,16 @@ const updateUserInfoByAdmin = async (req, res) => {
     let payload = req.body;
     if (req?.file?.path) {
       payload["image"] = req.file?.path;
+      await Admin.update(
+        {
+          image: req.file?.path,
+        },
+        {
+          where: {
+            id: adminId,
+          },
+        }
+      );
     }
     const userManagement = await AdminDetail.findOne({
       adminId,
@@ -339,6 +359,7 @@ const updateUserInfoByAdmin = async (req, res) => {
         adminId,
       },
     });
+
     return success(res, {
       msg: "User updated successfully",
       data: [],

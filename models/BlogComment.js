@@ -26,7 +26,19 @@ const BlogComment = db.define("blogComments", {
     },
     allowNull: false,
   },
+  repliedByUserId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "users",
+      key: "id",
+    },
+    allowNull: true,
+  },
   comment: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  reply: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
@@ -39,7 +51,10 @@ const BlogComment = db.define("blogComments", {
 Blog.hasMany(BlogComment, { foreignKey: "blogId" });
 BlogComment.belongsTo(Blog, { foreignKey: "blogId" });
 
-User.hasMany(BlogComment, { foreignKey: "userId" });
-BlogComment.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(BlogComment, { foreignKey: "userId", as: "user" });
+BlogComment.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+User.hasMany(BlogComment, { foreignKey: "repliedByUserId", as: "repliedBy" });
+BlogComment.belongsTo(User, { foreignKey: "repliedByUserId", as: "repliedBy" });
 
 module.exports = BlogComment;

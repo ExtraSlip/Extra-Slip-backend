@@ -5,21 +5,21 @@ const { upload } = require("../../helpers");
 const { TagValidation } = require("../../validations/TagValidation");
 const router = express.Router();
 
-router.get("/", verifyAdminToken, TagController.index);
+router.get("/", verifyAdminToken([]), TagController.index);
 router.post(
   "/",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   TagValidation,
   TagController.add
 );
 router.put(
   "/:id",
-  verifyAdminToken,
+  verifyAdminToken([]),
   upload.single("image"),
   TagValidation,
   TagController.update
 );
-router.delete("/:id", verifyAdminToken, TagController.deleteTag);
+router.delete("/:id", verifyAdminToken([]), TagController.deleteTag);
 
 module.exports = router;

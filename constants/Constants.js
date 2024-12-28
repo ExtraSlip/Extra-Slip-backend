@@ -1,6 +1,5 @@
 const RoleType = {
   ADMIN: "admin",
-  SUPERADMIN: "superadmin",
   EDITOR: "editor",
   AUTHOR: "author",
   FREELANCER: "freelancer",
@@ -30,15 +29,38 @@ const SocialType = {
   YOUTUBE: "youtube",
 };
 
+const Settings = {
+  SITEICON: "siteIcon",
+  ADMINCONTACTEMAIL: "adminContactEmail",
+  POSTURL: "postUrl",
+  FACEBOOK: "facebookLink",
+  TWITTER: "twitterLink",
+  LINKEDIN: "linkedinLink",
+  INSTAGRAM: "instagramLink",
+  YOUTUBE: "youtubeLink",
+  THREAD: "threadLink",
+  PINTREST: "pininterestLink",
+  DISCORD: "discordLink",
+};
+
+const POSTURL = {
+  CUSTOM: "custom",
+  CATEGORYBASED: "categoryBased",
+};
+
 const Badges = {};
 
 const Stamps = {};
 
 const BlogStatus = {
-  PENDING: 0,
-  APPROVED: 1,
-  REJECTED: 2,
-  PUBLISHED: 3,
+  DRAFT: 0,
+  PUBLISHED: 1,
+};
+
+const BlogFilterType = {
+  Total: 0,
+  Mine: 1,
+  Deleted: 2,
 };
 
 const CommentStatus = {
@@ -49,7 +71,7 @@ const CommentStatus = {
 const TopicTypes = {
   TAG: "tag",
   PLAYER: "player",
-  CATEGORY: "category",
+  TEAM: "team",
   OTHER: "other",
 };
 
@@ -63,4 +85,7 @@ module.exports = {
   BlogStatus,
   CommentStatus,
   TopicTypes,
+  BlogFilterType,
+  POSTURL,
+  Settings,
 };
