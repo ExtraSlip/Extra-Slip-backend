@@ -16,6 +16,13 @@ const menuJson = [
     subMenus: [],
   },
   {
+    name: "Settings",
+    hasChild: 0,
+    label: "Settings",
+    menuPath: "/settings",
+    subMenus: [],
+  },
+  {
     name: "Poll",
     hasChild: 0,
     label: "Poll",
