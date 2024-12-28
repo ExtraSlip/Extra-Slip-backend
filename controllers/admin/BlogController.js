@@ -36,6 +36,7 @@ const topicsList = async (req, res) => {
       attributes: [
         ["id", "topicId"],
         "name",
+        "image",
         [sequelize.literal(`'tag'`), "type"],
         [sequelize.literal(`'0'`), "id"],
       ],
@@ -46,6 +47,7 @@ const topicsList = async (req, res) => {
       attributes: [
         ["id", "topicId"],
         "name",
+        "image",
         [sequelize.literal(`'player'`), "type"],
         [sequelize.literal(`'0'`), "id"],
       ],
@@ -56,6 +58,7 @@ const topicsList = async (req, res) => {
       attributes: [
         ["id", "topicId"],
         "name",
+        "image",
         [sequelize.literal(`'team'`), "type"],
         [sequelize.literal(`'0'`), "id"],
       ],
