@@ -97,6 +97,15 @@ const add = async (req, res) => {
       payload["stats"] = req.files?.stats[0]?.path;
     }
     payload["slug"] = createSlug(payload.name);
+    const slugExists = await Player.findOne({
+      where: {
+        slug: payload.slug,
+      },
+    });
+    const maxId = await Player.max("id");
+    if (slugExists) {
+      payload["slug"] = payload["slug"] + "-" + (maxId ?? 1);
+    }
     if (req?.files?.image) {
       payload["image"] = req.files?.image[0]?.path;
     }
@@ -108,10 +117,19 @@ const add = async (req, res) => {
       let playerQuickLinks = JSON.parse(payload?.playerQuickLinks);
       await Promise.all(
         playerQuickLinks.map(async (playerQuickLink) => {
+          let slug = createSlug(playerQuickLink?.title);
+          let slugExists = await PlayerQuickLink.findOne({
+            where: {
+              slug: slug,
+            },
+          });
+          if (slugExists) {
+            slug = slug + "-" + ((await PlayerQuickLink.max("id")) ?? 1);
+          }
           await PlayerQuickLink.create({
             playerId: player.id,
             title: playerQuickLink?.title,
-            slug: createSlug(playerQuickLink?.title),
+            slug: slug,
             description: playerQuickLink?.description,
           });
         })
@@ -166,10 +184,19 @@ const update = async (req, res) => {
       let playerQuickLinks = JSON.parse(payload?.playerQuickLinks);
       await Promise.all(
         playerQuickLinks.map(async (playerQuickLink) => {
+          let slug = createSlug(playerQuickLink?.title);
+          let slugExists = await PlayerQuickLink.findOne({
+            where: {
+              slug: slug,
+            },
+          });
+          if (slugExists) {
+            slug = slug + "-" + ((await PlayerQuickLink.max("id")) ?? 1);
+          }
           await PlayerQuickLink.create({
             playerId: player.id,
             title: playerQuickLink?.title,
-            slug: createSlug(playerQuickLink?.title),
+            slug: slug,
             description: playerQuickLink?.description,
           });
         })

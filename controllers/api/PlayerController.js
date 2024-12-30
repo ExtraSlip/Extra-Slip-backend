@@ -122,6 +122,118 @@ const getBySlug = async (req, res) => {
   }
 };
 
+const getTagInfoByQuickLinkSlug = async (req, res) => {
+  try {
+    let slug = req.params.slug;
+    const playerQuickLink = await PlayerQuickLink.findOne({
+      where: {
+        slug,
+      },
+    });
+    const teamQuickLink = await TeamQuickLink.findOne({
+      where: {
+        slug,
+      },
+    });
+    if (!playerQuickLink && !teamQuickLink) {
+      return error(res, {
+        msg: "Quick link not found!!",
+      });
+    }
+    let type = "";
+    let id = 0;
+    if (playerQuickLink) {
+      type = TopicTypes.PLAYER;
+      id = playerQuickLink.playerId;
+    } else {
+      type = TopicTypes.TEAM;
+      id = teamQuickLink.teamId;
+    }
+
+    let response = {};
+    if (type == TopicTypes.PLAYER) {
+      response = await Player.findOne({
+        where: {
+          id,
+        },
+        include: [
+          {
+            model: Admin,
+            attributes: ["name", "email"],
+          },
+          {
+            model: TeamPlayer,
+            attributes: ["id", "playerId", "teamId"],
+            include: [
+              {
+                model: Team,
+                attributes: ["name"],
+              },
+            ],
+          },
+          {
+            model: PlayerQuickLink,
+            attributes: ["title", "slug"],
+          },
+        ],
+      });
+      if (!response) {
+        return error(res, {
+          msg: "Player not found!!",
+        });
+      }
+      response = response.toJSON();
+      response["quickLinks"] = response.playerQuickLinks;
+      delete response.playerQuickLinks;
+      response["quickLinkInfo"] = await PlayerQuickLink.findOne({
+        where: {
+          playerId: response.id,
+          slug: slug,
+        },
+      });
+    } else {
+      response = await Team.findOne({
+        where: {
+          id,
+        },
+        include: [
+          {
+            model: Admin,
+            attributes: ["name", "email"],
+          },
+          {
+            model: TeamQuickLink,
+            attributes: ["title", "slug"],
+          },
+        ],
+      });
+      if (!response) {
+        return error(res, {
+          msg: "Team not found!!",
+        });
+      }
+      response = response.toJSON();
+      response["quickLinks"] = response.teamQuickLinks;
+      delete response.teamQuickLinks;
+      response["quickLinkInfo"] = await TeamQuickLink.findOne({
+        where: {
+          teamId: response.id,
+          slug: slug,
+        },
+      });
+    }
+    return success(res, {
+      data: [response],
+      msg: "Info fetched successfully!!",
+    });
+  } catch (err) {
+    return error(res, {
+      msg: "Something went wrong!!",
+      error: [err?.message],
+    });
+  }
+};
+
 const moreInfo = async (req, res) => {
   try {
     const slug = req.params.slug;
@@ -233,4 +345,5 @@ module.exports = {
   getBySlug,
   moreInfo,
   getBlogs,
+  getTagInfoByQuickLinkSlug,
 };
