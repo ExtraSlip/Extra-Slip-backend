@@ -3,4 +3,5 @@ module.exports = {
   BlogController: require("./BlogController"),
   UserController: require("./UserController"),
   PlayerController: require("./PlayerController"),
+  SiteMapController: require("./SiteMapController"),
 };
