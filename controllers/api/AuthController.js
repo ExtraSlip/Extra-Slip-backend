@@ -60,11 +60,20 @@ const register = async (req, res) => {
         msg: "Email already registered!!",
       });
     }
+    let username = await User.findOne({
+      where: {
+        userName: payload.userName,
+      },
+    });
+    if (username) {
+      return error(res, {
+        msg: "Username already registered!!",
+      });
+    }
     const name = payload.name.split(" ");
     payload["firstName"] = name[0];
     payload["lastName"] = name.length > 1 ? name[1] : "";
     payload["password"] = await bcrypt.hash(payload.password, genSalt);
-    payload["userName"] = payload.email;
     user = await User.create(payload);
     return success(res, {
       msg: "User registered successfully!!",

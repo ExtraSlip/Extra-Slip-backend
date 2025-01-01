@@ -39,6 +39,7 @@ const RegisterUserValidation = async (req, res, next) => {
     email: email,
     password: password,
     name: Joi.string().required(),
+    userName: Joi.string().required(),
   });
   await Validate(req, res, next, schema);
 };
