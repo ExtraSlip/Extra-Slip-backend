@@ -23,4 +23,5 @@ module.exports = {
   Setting: require("./Setting"),
   TwitterFeed: require("./TwitterFeed"),
   TeamQuickLink: require("./TeamQuickLink"),
+  BlogLike: require("./BlogLike"),
 };

@@ -42,6 +42,14 @@ const PlayerValidation = async (req, res, next) => {
     teams: Joi.string().optional().allow("", null).messages({
       "any.required": "Teams field is required",
     }),
+    facebookLink: Joi.string().optional().allow(null, ""),
+    twitterLink: Joi.string().optional().allow(null, ""),
+    linkedinLink: Joi.string().optional().allow(null, ""),
+    instagramLink: Joi.string().optional().allow(null, ""),
+    youtubeLink: Joi.string().optional().allow(null, ""),
+    threadLink: Joi.string().optional().allow(null, ""),
+    pininterestLink: Joi.string().optional().allow(null, ""),
+    discordLink: Joi.string().optional().allow(null, ""),
     playerQuickLinks: Joi.string().optional().allow("[]", null).messages({
       "any.required": "Player Quick Links field is required",
     }),

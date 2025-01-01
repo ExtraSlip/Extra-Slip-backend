@@ -13,6 +13,7 @@ const {
   Setting,
   TwitterFeed,
   Team,
+  BlogLike,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
 const {
@@ -67,6 +68,16 @@ const get = async (req, res) => {
       });
     }
     blog = blog.toJSON();
+    blog["isLiked"] = false;
+    if (req.user) {
+      let isLiked = await BlogLike.findOne({
+        where: {
+          blogId: id,
+          userId: req.user.id,
+        },
+      });
+      blog["isLiked"] = isLiked ? true : false;
+    }
     const settings = await Setting.findAll({
       where: {
         key: {
@@ -283,6 +294,16 @@ const getBlogByUrl = async (req, res) => {
       },
     });
     blog = blog.toJSON();
+    blog["isLiked"] = false;
+    if (req.user) {
+      let isLiked = await BlogLike.findOne({
+        where: {
+          blogId: id,
+          userId: req.user.id,
+        },
+      });
+      blog["isLiked"] = isLiked ? true : false;
+    }
     const settings = await Setting.findAll({
       where: {
         key: {
@@ -318,7 +339,7 @@ const getBlogByUrl = async (req, res) => {
           case TopicTypes.TEAM:
             x["topic"] = await Team.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name", "image", "slug"]
+              attributes: ["id", "name", "image", "slug"],
             });
             break;
 
@@ -615,9 +636,26 @@ const addLike = async (req, res) => {
         error: [],
       });
     }
-    blog.increment("likes");
+    const blogLike = await BlogLike.findOne({
+      where: {
+        blogId: blogId,
+        userId: req.user.id,
+      },
+    });
+    let msg = "Blog liked successfully!!";
+    if (blogLike) {
+      await blogLike.destroy();
+      blog.decrement("likes");
+      msg = "Blog un liked successfully!!";
+    } else {
+      await BlogLike.create({
+        blogId: blogId,
+        userId: req.user.id,
+      });
+      blog.increment("likes");
+    }
     return success(res, {
-      msg: "Blog liked successfully!!",
+      msg,
       data: [],
     });
   } catch (err) {

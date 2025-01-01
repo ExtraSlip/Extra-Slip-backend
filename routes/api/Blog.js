@@ -5,7 +5,7 @@ const {
   BookmarkValidation,
   CommentReplyValidation,
 } = require("../../validations/BlogValidation");
-const { verifyToken } = require("../../middleware");
+const { verifyToken, verifyTempToken } = require("../../middleware");
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.post(
   BookmarkValidation,
   BlogController.toggleBookmark
 );
-router.get("/getBlogByUrl", BlogController.getBlogByUrl);
-router.get("/:id", BlogController.get);
+router.get("/getBlogByUrl", verifyTempToken, BlogController.getBlogByUrl);
+router.get("/:id", verifyTempToken, BlogController.get);
 
 module.exports = router;
