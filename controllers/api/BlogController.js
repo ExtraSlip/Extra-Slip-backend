@@ -683,44 +683,13 @@ const addComment = async (req, res) => {
   }
 };
 
-const addCommentReply = async (req, res) => {
-  try {
-    let payload = req.body;
-    payload["repliedByUserId"] = req.user.id;
-    let comment = await BlogComment.findOne({
-      where: {
-        id: payload.commentId,
-      },
-    });
-    if (!comment) {
-      return error(res, {
-        msg: "Comment not found!!",
-        error: [],
-      });
-    }
-    await BlogComment.update(payload, {
-      where: {
-        id: payload.commentId,
-      },
-    });
-    return success(res, {
-      msg: "Comment replied successfully!!",
-      data: [comment],
-    });
-  } catch (err) {
-    return error(res, {
-      msg: "Something went wrong!!",
-      error: [err?.message],
-    });
-  }
-};
-
 const getComments = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    const comments = await BlogComment.findAll({
+    let comments = await BlogComment.findAll({
       where: {
         blogId,
+        parentCommentId: null,
       },
       include: [
         {
@@ -728,13 +697,37 @@ const getComments = async (req, res) => {
           attributes: ["id", "firstName", "lastName", "image"],
           as: "user",
         },
+      ],
+      attributes: ["id", "comment", "createdAt", "blogId"],
+    });
+    const childComments = await BlogComment.findAll({
+      where: {
+        blogId,
+        parentCommentId: {
+          [Op.ne]: null,
+        },
+      },
+      include: [
         {
           model: User,
           attributes: ["id", "firstName", "lastName", "image"],
-          as: "repliedBy",
+          as: "user",
         },
       ],
-      attributes: ["id", "comment", "createdAt", "blogId", "reply"],
+      attributes: ["id", "comment", "createdAt", "blogId", "parentCommentId"],
+    });
+    let childCommentObject = {};
+    childComments.map((e) => {
+      if (Object.keys(childCommentObject).includes(e.parentCommentId)) {
+        childCommentObject[e.parentCommentId].push(e);
+      } else {
+        childCommentObject[e.parentCommentId] = [e];
+      }
+    });
+    comments = comments.map((e) => {
+      let comment = e.toJSON();
+      comment["childComments"] = childCommentObject[e.id] || [];
+      return comment;
     });
     return success(res, {
       msg: "Comments listed successfully!!",
@@ -787,6 +780,5 @@ module.exports = {
   addLike,
   toggleBookmark,
   getBlogByUrl,
-  addCommentReply,
   list,
 };
