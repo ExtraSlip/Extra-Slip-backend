@@ -26,6 +26,7 @@ const {
   Setting,
   TwitterFeed,
   TeamQuickLink,
+  BlogLike,
 } = require("../models");
 const { RoleType, RegisterStep } = require("../constants/Constants");
 const { MenuSeeder } = require("../seeder");

@@ -34,7 +34,18 @@ const LoginValidation = async (req, res, next) => {
   await Validate(req, res, next, schema);
 };
 
+const RegisterUserValidation = async (req, res, next) => {
+  const schema = Joi.object().keys({
+    email: email,
+    password: password,
+    name: Joi.string().required(),
+    userName: Joi.string().required(),
+  });
+  await Validate(req, res, next, schema);
+};
+
 module.exports = {
   RegisterValidation,
+  RegisterUserValidation,
   LoginValidation,
 };

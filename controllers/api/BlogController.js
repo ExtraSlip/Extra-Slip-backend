@@ -13,6 +13,7 @@ const {
   Setting,
   TwitterFeed,
   Team,
+  BlogLike,
 } = require("../../models");
 const { getPageAndOffset } = require("../../utils/Common");
 const {
@@ -67,6 +68,16 @@ const get = async (req, res) => {
       });
     }
     blog = blog.toJSON();
+    blog["isLiked"] = false;
+    if (req.user) {
+      let isLiked = await BlogLike.findOne({
+        where: {
+          blogId: id,
+          userId: req.user.id,
+        },
+      });
+      blog["isLiked"] = isLiked ? true : false;
+    }
     const settings = await Setting.findAll({
       where: {
         key: {
@@ -283,6 +294,16 @@ const getBlogByUrl = async (req, res) => {
       },
     });
     blog = blog.toJSON();
+    blog["isLiked"] = false;
+    if (req.user) {
+      let isLiked = await BlogLike.findOne({
+        where: {
+          blogId: id,
+          userId: req.user.id,
+        },
+      });
+      blog["isLiked"] = isLiked ? true : false;
+    }
     const settings = await Setting.findAll({
       where: {
         key: {
@@ -318,7 +339,7 @@ const getBlogByUrl = async (req, res) => {
           case TopicTypes.TEAM:
             x["topic"] = await Team.findOne({
               where: { id: x.topicId },
-              attributes: ["id", "name", "image", "slug"]
+              attributes: ["id", "name", "image", "slug"],
             });
             break;
 
@@ -615,9 +636,26 @@ const addLike = async (req, res) => {
         error: [],
       });
     }
-    blog.increment("likes");
+    const blogLike = await BlogLike.findOne({
+      where: {
+        blogId: blogId,
+        userId: req.user.id,
+      },
+    });
+    let msg = "Blog liked successfully!!";
+    if (blogLike) {
+      await blogLike.destroy();
+      blog.decrement("likes");
+      msg = "Blog un liked successfully!!";
+    } else {
+      await BlogLike.create({
+        blogId: blogId,
+        userId: req.user.id,
+      });
+      blog.increment("likes");
+    }
     return success(res, {
-      msg: "Blog liked successfully!!",
+      msg,
       data: [],
     });
   } catch (err) {
@@ -645,44 +683,13 @@ const addComment = async (req, res) => {
   }
 };
 
-const addCommentReply = async (req, res) => {
-  try {
-    let payload = req.body;
-    payload["repliedByUserId"] = req.user.id;
-    let comment = await BlogComment.findOne({
-      where: {
-        id: payload.commentId,
-      },
-    });
-    if (!comment) {
-      return error(res, {
-        msg: "Comment not found!!",
-        error: [],
-      });
-    }
-    await BlogComment.update(payload, {
-      where: {
-        id: payload.commentId,
-      },
-    });
-    return success(res, {
-      msg: "Comment replied successfully!!",
-      data: [comment],
-    });
-  } catch (err) {
-    return error(res, {
-      msg: "Something went wrong!!",
-      error: [err?.message],
-    });
-  }
-};
-
 const getComments = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    const comments = await BlogComment.findAll({
+    let comments = await BlogComment.findAll({
       where: {
         blogId,
+        parentCommentId: null,
       },
       include: [
         {
@@ -690,13 +697,37 @@ const getComments = async (req, res) => {
           attributes: ["id", "firstName", "lastName", "image"],
           as: "user",
         },
+      ],
+      attributes: ["id", "comment", "createdAt", "blogId"],
+    });
+    const childComments = await BlogComment.findAll({
+      where: {
+        blogId,
+        parentCommentId: {
+          [Op.ne]: null,
+        },
+      },
+      include: [
         {
           model: User,
           attributes: ["id", "firstName", "lastName", "image"],
-          as: "repliedBy",
+          as: "user",
         },
       ],
-      attributes: ["id", "comment", "createdAt", "blogId", "reply"],
+      attributes: ["id", "comment", "createdAt", "blogId", "parentCommentId"],
+    });
+    let childCommentObject = {};
+    childComments.map((e) => {
+      if (Object.keys(childCommentObject).includes(e.parentCommentId)) {
+        childCommentObject[e.parentCommentId].push(e);
+      } else {
+        childCommentObject[e.parentCommentId] = [e];
+      }
+    });
+    comments = comments.map((e) => {
+      let comment = e.toJSON();
+      comment["childComments"] = childCommentObject[e.id] || [];
+      return comment;
     });
     return success(res, {
       msg: "Comments listed successfully!!",
@@ -749,6 +780,5 @@ module.exports = {
   addLike,
   toggleBookmark,
   getBlogByUrl,
-  addCommentReply,
   list,
 };

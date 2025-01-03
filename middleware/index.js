@@ -48,6 +48,27 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
+const verifyTempToken = async (req, res, next) => {
+  console.log(req.headers["authorization"]);
+  let token =
+    req.body.token ||
+    req.query.token ||
+    req.headers["x-access-token"] ||
+    req.headers["authorization"] ||
+    req.headers["Authorization"];
+
+  if (token) {
+    token = token.split(" ")[1];
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const user = await User.findByPk(decoded.id, {
+      attributes: { exclude: ["updatedAt", "password"] },
+      raw: true,
+    });
+    req.user = user;
+  }
+  next();
+};
+
 const verifyAdminToken = (roles, req, res, next) => {
   return async (req, res, next) => {
     console.log(req.headers["authorization"]);
@@ -114,4 +135,5 @@ const verifyAdminToken = (roles, req, res, next) => {
 module.exports = {
   verifyToken,
   verifyAdminToken,
+  verifyTempToken,
 };

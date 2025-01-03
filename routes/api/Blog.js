@@ -3,9 +3,8 @@ const { BlogController } = require("../../controllers/api");
 const {
   CommentValidation,
   BookmarkValidation,
-  CommentReplyValidation,
 } = require("../../validations/BlogValidation");
-const { verifyToken } = require("../../middleware");
+const { verifyToken, verifyTempToken } = require("../../middleware");
 
 const router = express.Router();
 
@@ -18,12 +17,6 @@ router.post(
   CommentValidation,
   BlogController.addComment
 );
-router.post(
-  "/comments/reply",
-  verifyToken,
-  CommentReplyValidation,
-  BlogController.addCommentReply
-);
 router.get("/comments/:blogId", BlogController.getComments);
 router.post("/likes/:blogId", verifyToken, BlogController.addLike);
 router.post(
@@ -32,7 +25,7 @@ router.post(
   BookmarkValidation,
   BlogController.toggleBookmark
 );
-router.get("/getBlogByUrl", BlogController.getBlogByUrl);
-router.get("/:id", BlogController.get);
+router.get("/getBlogByUrl", verifyTempToken, BlogController.getBlogByUrl);
+router.get("/:id", verifyTempToken, BlogController.get);
 
 module.exports = router;
