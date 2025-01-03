@@ -699,6 +699,7 @@ const getComments = async (req, res) => {
         },
       ],
       attributes: ["id", "comment", "createdAt", "blogId"],
+      order: [["id", "desc"]],
     });
     const childComments = await BlogComment.findAll({
       where: {
@@ -716,12 +717,15 @@ const getComments = async (req, res) => {
       ],
       attributes: ["id", "comment", "createdAt", "blogId", "parentCommentId"],
     });
+
     let childCommentObject = {};
     childComments.map((e) => {
-      if (Object.keys(childCommentObject).includes(e.parentCommentId)) {
-        childCommentObject[e.parentCommentId].push(e);
+      if (
+        Object.keys(childCommentObject).includes(e.parentCommentId.toString())
+      ) {
+        childCommentObject[e.parentCommentId].push(e.toJSON());
       } else {
-        childCommentObject[e.parentCommentId] = [e];
+        childCommentObject[e.parentCommentId] = [e.toJSON()];
       }
     });
     comments = comments.map((e) => {
