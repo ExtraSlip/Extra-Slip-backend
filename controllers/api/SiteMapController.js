@@ -3,7 +3,7 @@ const envCredential = require("../../config");
 const { Team, Player, TeamQuickLink, Blog } = require("../../models");
 const sequelize = require("../../utils/Connection");
 const PlayerQuickLink = require("../../models/PlayerQuickLink");
-const BASE_URL = envCredential.MAIL_BASE_URL;
+const BASE_URL = envCredential.FRONTEND_URL;
 
 const index = async (req, res) => {
   try {
@@ -84,22 +84,22 @@ const index = async (req, res) => {
       }),
     ];
     response.push({
-      slug: "https://extraslip.com/who-said-what",
+      slug: `${BASE_URL}/who-said-what`,
       lastModified: new Date().toLocaleString(),
       priority: 1,
     });
     response.push({
-      slug: "https://extraslip.com/legends-of-the-past",
+      slug: `${BASE_URL}/legends-of-the-past`,
       lastModified: new Date().toLocaleString(),
       priority: 1,
     });
     response.push({
-      slug: "https://extraslip.com/cricket-live-streaming",
+      slug: `${BASE_URL}/cricket-live-streaming`,
       lastModified: new Date().toLocaleString(),
       priority: 1,
     });
     response.push({
-      slug: "https://extraslip.com/cricket-news",
+      slug: `${BASE_URL}/cricket-news`,
       lastModified: new Date().toLocaleString(),
       priority: 1,
     });
